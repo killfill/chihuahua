@@ -1,0 +1,43 @@
+
+.mui-app-bar {
+    button, .mui-drop-down-icon {
+        float: right;
+    }
+
+    //IMHO, i think this should be in https://github.com/callemall/material-ui/blob/master/src/less/components/app-bar.less#L15
+    .mui-drop-down-icon {
+        margin-top: 8px;
+        color: @app-bar-text-color;
+        padding: (@icon-size / 2);
+        .mui-menu {
+            color: @dark-black
+        }
+    }
+}
+
+
+.sidebar-header {
+    background-color: @primary-1-color;
+    cursor: pointer;
+
+    padding-left: @desktop-gutter;
+    padding-top: @desktop-gutter-less;
+    padding-bottom: @desktop-gutter;
+
+    margin-bottom: @desktop-gutter-mini;
+
+    .mui-text-full-white;
+    .mui-font-weight-light;
+    
+    .icon {
+        float: left;
+    }
+    .username {
+        // background-color: red; 
+        font-size: initial;
+        text-align: center;
+        margin-top: 5px;
+        font-size: initial;
+    }
+
+}
