@@ -60,6 +60,11 @@ module.exports = React.createClass({
             return
  
         Actions.session.login(d.backend, d.user, d.pass)
+
+        //Esto es temporal!!
+        this.refs.dialog.dismiss()
+
+
     }
 })
         

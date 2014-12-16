@@ -3,7 +3,9 @@ var React = require('React'),
     Gravatar = require('./gravatar.jsx'),
     List = require('./list.jsx'),
     LoginDialog = require('./login-dialog.jsx'),
-    Vms = require('../stores/vms')
+
+    Vms = require('../stores/vms'),
+    Datasets = require('../stores/datasets')
 
 var AppCanvas = mui.AppCanvas,
     AppBar = mui.AppBar,
@@ -42,19 +44,35 @@ module.exports = React.createClass({
 
         var items = vms.map(function(vm) {
 
+            var dataset = {
+                name: '',
+                os: 'unknown'
+            }
+            if (vm.config.dataset) {
+                var d = Datasets.get(vm.config.dataset)
+                if (d) {
+                    dataset.name = d.name + ' v' + d.version
+                    dataset.os = d.os
+                }
+            }
+
+            var createdAt = vm.config.created_at.split('T')[0]
+
             return {
-                image: 'https://nube.virtualizado.cl/images/logos/linux.png',
+                image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
+                // image: 'https://nube.virtualizado.cl/images/logos/linux.png',
                 title: title(vm.config.alias),
                 date: title(vm.state),
                 description:
-                    title("ubuntun") + ' ' + 'XXX14.02' + '. ' +
+                    (dataset.name? (title(dataset.name) + '. '): '') +
+                    // title("ubuntun") + ' ' + 'XXX14.02' + '. ' +
                     title('small') + ' machine with ' + (vm.config.ram/1024) + 'GB Ram, ' +
-                    (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + vm.config.quota + 'GB disk. Created 3 years ago. ' +
+                    (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + vm.config.quota + 'GB disk. Created at ' + createdAt + '. ' +
                     (vm.owner? ('Owned by ' + vm.owner): ''),
                 icons: this.iconsOfVM(vm)
             }
         }.bind(this))
-        
+
         this.setState({listItems: items})
 
     },
@@ -81,7 +99,7 @@ module.exports = React.createClass({
           { payload: '2', text: 'There' }
         ];
 
-        var title = 'Home'
+        var title = 'Machines'
 
         return (
             <AppCanvas predefinedLayout={1}>

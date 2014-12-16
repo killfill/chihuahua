@@ -2,19 +2,15 @@
 var Store = require('../utils/Store.js'),
     D = require('../dispatcher')
 
-var Vms = module.exports = new Store()
+var Datasets = module.exports = new Store()
 
 D.register(function(payload) {
     var action = payload.action
 
     switch (action.actionType) {
 
-        case 'VMS_NEW':
-            Vms.set(action.vm.uuid, action.vm)
-            break;
-
-        case 'VMS_LIST':
-            Vms.setDataArray(action.list, 'uuid')
+        case 'DATASETS_LIST':
+            Datasets.setDataArray(action.list, 'uuid')
             break;
 
         // default:
@@ -22,6 +18,6 @@ D.register(function(payload) {
 
     }
 
-    Vms.emit()
+    Datasets.emit()
     return false
 })

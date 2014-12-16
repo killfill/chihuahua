@@ -1,5 +1,6 @@
-var FiFo = require('nfifo/fifo')
-
+var FiFo = require('nfifo/fifo'),
+    Datasets = require('./datasets'),
+    Vms = require('./vms')
 
 module.exports = {
     login: function(endpoint, login, password) {
@@ -12,12 +13,12 @@ module.exports = {
             if (err || res.statusCode != 200)
                 alert(err || res.statusCode)
 
-            // alert(res.statusCode)
-            // console.log('LOGIN:', body)
-            window.onLogin && window.onLogin()
+            fifo.send('vms').get({headers: {'x-full-list': true}}, function(err, req, vms) {
+                fifo.send('datasets').get({headers: {'x-full-list': true}}, function(err, req, datasets) {
 
-            fifo.send('vms').get({headers: {'x-full-list': true}}, function(err, req, body) {
-                require('./index').vms.setList(body)
+                    Datasets.setList(datasets)
+                    Vms.setList(vms)
+                })
             })
 
         })

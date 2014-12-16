@@ -4,7 +4,7 @@ module.exports = {
 
     setList: function(list) {
         D.handleViewAction({
-            actionType: 'VMS_LIST',
+            actionType: 'DATASETS_LIST',
             list: list
         })
     }
