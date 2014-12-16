@@ -17,8 +17,10 @@ module.exports = React.createClass({
                     <div className='title'>{item.title}</div>
                     <div className='date'>{item.date}</div>
                     <span className='description'>{item.description}</span>
-                    {item.icons.map(function(i) {return <mui.Icon icon={i} />})}
-                    
+                    <span className='bages'>
+                        {
+                            item.icons.map(function(i) {return <mui.Icon icon={i.icon} alt={i.alt} title={i.alt} />})}
+                    </span>
                 </div>
             </li>)
         })
