@@ -99,7 +99,7 @@ module.exports = React.createClass({
         if (vm.config.dataset) {
             var d = Datasets.get(vm.config.dataset)
             if (d) {
-                dataset.name = d.name + ' v' + d.version
+                dataset.name = '<b>' + title(d.name) + '</b> v' + d.version
                 dataset.os = d.os
             }
         }
@@ -121,15 +121,20 @@ module.exports = React.createClass({
                 pack = p.name
         }
 
+        var disk = vm.config.quota + 'GB'
+        if (vm.config.disks) {
+            disk = vm.config.disks.map(function(d) {return Math.round(d.size/1000) + 'GB'}).join('+')
+        }
+
         return {
             image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
             title: title(vm.config.alias),
             date: title(vm.state),
             description:
-                (dataset.name? (title(dataset.name) + '. '): '') +
+                (dataset.name? (dataset.name + '. '): '') +
                 (pack? (title(pack) + ' machine with '): '') +
                 (vm.config.ram/1024) + 'GB Ram, ' +
-                (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + vm.config.quota + 'GB disk. Created at ' + createdAt + '. ' +
+                (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + disk + ' disk. Created at ' + createdAt + '. ' +
                 (owner? ('Owned by ' + owner) + '. ': ''),
             icons: this.iconsOfVM(vm)
         }
