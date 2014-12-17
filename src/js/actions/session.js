@@ -15,13 +15,13 @@ module.exports = {
             if (err || res.statusCode != 200)
                 alert(err || res.statusCode)
 
+            //TODO: x-full-list-fields <----
             fifo.send('vms').get({headers: {'x-full-list': true}}, function(err, req, vms) {
                 fifo.send('datasets').get({headers: {'x-full-list': true}}, function(err, req, datasets) {
                     fifo.send('orgs').get({headers: {'x-full-list': true}}, function(err, req, orgs) {
                         fifo.send('packages').get({headers: {'x-full-list': true}}, function(err, req, packages) {
 
                             Packages.setList(packages)
-                            console.log('packages', packages)
                             Orgs.setList(orgs)
                             Datasets.setList(datasets)
                             Vms.setList(vms)

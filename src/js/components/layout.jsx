@@ -1,4 +1,5 @@
 var React = require('React'),
+    damals = require('damals'),
     mui = require('material-ui'),
     Gravatar = require('./gravatar.jsx'),
     List = require('./list.jsx'),
@@ -104,7 +105,7 @@ module.exports = React.createClass({
             }
         }
 
-        var createdAt = vm.config.created_at.split('T')[0]
+        var createdAt = damals(Date.parse(vm.config.created_at))
 
         var owner = false
         if (vm.owner) {
@@ -134,7 +135,7 @@ module.exports = React.createClass({
                 (dataset.name? (dataset.name + '. '): '') +
                 (pack? (title(pack) + ' machine with '): '') +
                 (vm.config.ram/1024) + 'GB Ram, ' +
-                (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + disk + ' disk. Created at ' + createdAt + '. ' +
+                (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + disk + ' disk. Created ' + createdAt + '. ' +
                 (owner? ('Owned by ' + owner) + '. ': ''),
             icons: this.iconsOfVM(vm)
         }
