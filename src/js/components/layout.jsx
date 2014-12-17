@@ -1,9 +1,11 @@
 var React = require('React'),
     damals = require('damals'),
     mui = require('material-ui'),
+    helpers = require('../utils/helpers')
     Gravatar = require('./gravatar.jsx'),
     List = require('./list.jsx'),
     LoginDialog = require('./login-dialog.jsx'),
+    Sidebar = require('./sidebar.jsx')
 
     Vms = require('../stores/vms'),
     Datasets = require('../stores/datasets'),
@@ -13,26 +15,6 @@ var React = require('React'),
 var AppCanvas = mui.AppCanvas,
     AppBar = mui.AppBar,
     FloatingActionButton = mui.FloatingActionButton
-
-var SidebarHeader = React.createClass({
-    render: function() {
-        var username = 'pneumann@gmail.com',
-            size = 32
-        return (<div className='sidebar-header'>
-            <div className='icon' style={{width: size}}>
-                <mui.Paper zDepth={1} circle={true} style={{overflow: 'hidden', height: size, height: size}}>
-                    <Gravatar email={username} size={size} />
-                </mui.Paper>
-            </div>
-            <div className='username'>{username}</div>
-        </div>)
-    }
-})
-
-
-function title(txt) {
-    return txt.charAt(0).toUpperCase() + txt.slice(1);
-}
 
 module.exports = React.createClass({
 
@@ -51,15 +33,8 @@ module.exports = React.createClass({
         var items = vms.map(this.vmForList)
         this.setState({listItems: items})
     },
-    render: function() {
 
-        var menuItems = [
-          { route: 'get-started', text: 'Dashboard', icon: 'action-dashboard'},
-          { route: 'get-started', text: 'Machines', icon: 'hardware-desktop-windows', number: "13"},
-          { route: 'css-framework', text: 'Datasets', icon: 'image-blur-linear'},
-          { route: 'components', text: 'Nodes', icon: 'device-storage'},
-          { route: 'exit', text: 'Log out', icon: 'action-label-outline' }
-        ];
+    render: function() {
 
         rightMenuItems = [
           { payload: '1', text: 'Hello' },
@@ -72,12 +47,12 @@ module.exports = React.createClass({
             <AppCanvas predefinedLayout={1}>
 
                 <AppBar title={title} onMenuIconButtonTouchTap={this.menuToggle}>
-                    <mui.DropDownIcon comentario='estos son contextuales...' icon="navigation-more-vert" menuItems={rightMenuItems} />
-                    <mui.IconButton icon="action-search" tooltip='Search' />
+                    <mui.DropDownIcon comentario='estos son contextuales...' icon='navigation-more-vert' menuItems={rightMenuItems} />
+                    <mui.IconButton icon='action-search' tooltip='Search' />
                 </AppBar>
 
-                <mui.LeftNav className='sidebar-menu' ref="sidebar" header={<SidebarHeader/>} menuItems={menuItems} selectedIndex={0} docked={false} isInitiallyOpen={false} onChange={this.menuSelected} />
-                <mui.FloatingActionButton className='create-vm-button' icon="content-add" mini={true} />
+                <Sidebar ref='sidebar' />
+                <mui.FloatingActionButton className='create-vm-button' icon='content-add' mini={true} />
 
                 <div className='mui-app-content-canvas'>
                     <List items={this.state.listItems}/>
@@ -90,6 +65,15 @@ module.exports = React.createClass({
 
     },
 
+    menuToggle: function() {
+        this.refs.sidebar.toggle()
+    },
+
+    menuSelected: function(e, idx, item) {
+        console.log('---->', item, idx)
+        // this.transitionTo(payload.route);
+    },
+
     vmForList: function(vm) {
 
         var dataset = {
@@ -100,7 +84,7 @@ module.exports = React.createClass({
         if (vm.config.dataset) {
             var d = Datasets.get(vm.config.dataset)
             if (d) {
-                dataset.name = '<b>' + title(d.name) + '</b> v' + d.version
+                dataset.name = '<b>' + helpers.titelize(d.name) + '</b> v' + d.version
                 dataset.os = d.os
             }
         }
@@ -127,35 +111,32 @@ module.exports = React.createClass({
             disk = vm.config.disks.map(function(d) {return Math.round(d.size/1000) + 'GB'}).join('+')
         }
 
-        var vmTitle = title(vm.config.alias)
+        var vmTitle = helpers.titelize(vm.config.alias)
         if (vm.metadata.jingles && vm.metadata.jingles.color)
             vmTitle = '<span style="color: ' + vm.metadata.jingles.color + '">' + vmTitle + '</span>'
-        // if (vm.metadata.jingles.color || locked)
+
+        var ips = vm.config.networks.map(function(net) {
+            if (net.primary)
+                return net.ip
+        }).filter(function(o){return o})
+        var ip = ''
+        if (ips.length)
+            ip = ips[0]
 
         return {
             image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
             title: vmTitle,
-            date: title(vm.state),
+            date: helpers.titelize(vm.state),
+            icons: this.iconsOfVM(vm),
             description:
                 (dataset.name? (dataset.name + '. '): '') +
-                (pack? (title(pack) + ' machine with '): '') +
+                (pack? (helpers.titelize(pack) + ' machine with '): '') +
                 (vm.config.ram/1024) + 'GB Ram, ' +
                 (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + disk + ' disk. Created ' + createdAt + '. ' +
-                (owner? ('Owned by ' + owner) + '. ': ''),
-            icons: this.iconsOfVM(vm)
+                (ip? ('IP ' + ip + '. '): '') +
+                (owner? ('Owned by ' + owner) + '. ': '')
         }
     },
-
-    menuSelected: function(e, idx, item) {
-        console.log('---->', item, idx)
-        // this.transitionTo(payload.route);
-    },
-
-    menuToggle: function() {
-        console.log('uuuh')
-        this.refs.sidebar.toggle()
-    },
-
 
     iconsOfVM: function(vm) {
 
@@ -173,10 +154,13 @@ module.exports = React.createClass({
             icons.push({icon: 'social-public', alt: 'Has public IP'})
 
         //If the history of the VM was changed < 2 days, show it as 'active'
-        var recent = 1* 24 * 3600,
+        var recent = 1 * 24 * 3600,
             lastLog = vm.log[vm.log.length-1]
         if (Date.now() - lastLog.date/1000 < recent * 1000)
             icons.push({icon: 'action-history', alt: 'Has recent history activity'})
+
+        if (vm.metadata.jingles && vm.metadata.jingles.locked)
+            icons.push({icon: 'action-lock-outline', alt: 'Is locked'})
 
         return icons
     }

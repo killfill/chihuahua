@@ -4,8 +4,9 @@ var React = require('React'),
 module.exports = React.createClass({
     render: function() {
 
-        var content = this.props.items.map(function(item) {
-            return (<li className='mui-list-item'>
+        var content = this.props.items.map(function(item, idx) {
+
+            return (<li className='mui-list-item' key={idx}>
 
                 <div className='icon'>
                     <mui.Paper zDepth={0} circle={true} style={{overflow: 'hidden', height: '31px'}}>
@@ -19,7 +20,7 @@ module.exports = React.createClass({
                     <span className='description' dangerouslySetInnerHTML={{__html: item.description}}></span>
                     <span className='bages'>
                         {
-                            item.icons.map(function(i) {return <mui.Icon icon={i.icon} alt={i.alt} title={i.alt} />})}
+                            item.icons.map(function(i, idx) {return <mui.Icon key={idx} icon={i.icon} alt={i.alt} title={i.alt} />})}
                     </span>
                 </div>
             </li>)
