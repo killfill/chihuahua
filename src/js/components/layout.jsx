@@ -78,7 +78,7 @@ module.exports = React.createClass({
 
         var dataset = {
             name: '',
-            os: 'unknown'
+            os: false //'unknown'
         }
 
         if (vm.config.dataset) {
@@ -124,7 +124,7 @@ module.exports = React.createClass({
             ip = ips[0]
 
         return {
-            image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
+            image: dataset.os? 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png': false,
             title: vmTitle,
             date: helpers.titelize(vm.state),
             icons: this.iconsOfVM(vm),

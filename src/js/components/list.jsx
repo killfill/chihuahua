@@ -6,14 +6,19 @@ module.exports = React.createClass({
 
         var content = this.props.items.map(function(item, idx) {
 
+            var image
+
+            if (item.image) {
+                image = (<div className='icon'>
+                            <mui.Paper zDepth={0} circle={true} style={{overflow: 'hidden', height: '31px'}}>
+                            <img src={item.image} />
+                        </mui.Paper>
+                    </div>
+                )
+            }
+
             return (<li className='mui-list-item' key={idx}>
-
-                <div className='icon'>
-                    <mui.Paper zDepth={0} circle={true} style={{overflow: 'hidden', height: '31px'}}>
-                        <img src={item.image} />
-                    </mui.Paper>
-                </div>
-
+                {image}
                 <div className="content">
                     <div className='title' dangerouslySetInnerHTML={{__html: item.title}}></div>
                     <div className='date'>{item.date}</div>
