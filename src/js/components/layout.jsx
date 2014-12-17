@@ -6,7 +6,8 @@ var React = require('React'),
 
     Vms = require('../stores/vms'),
     Datasets = require('../stores/datasets'),
-    Orgs = require('../stores/orgs')
+    Orgs = require('../stores/orgs'),
+    Packages = require('../stores/packages')
 
 var AppCanvas = mui.AppCanvas,
     AppBar = mui.AppBar,
@@ -113,13 +114,21 @@ module.exports = React.createClass({
                 owner = o.name
         }
 
+        var pack = false
+        if (vm.config.package) {
+            var p = Packages.get(vm.config.package)
+            if (p)
+                pack = p.name
+        }
+
         return {
             image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
             title: title(vm.config.alias),
             date: title(vm.state),
             description:
                 (dataset.name? (title(dataset.name) + '. '): '') +
-                title('small') + ' machine with ' + (vm.config.ram/1024) + 'GB Ram, ' +
+                (pack? (title(pack) + ' machine with '): '') +
+                (vm.config.ram/1024) + 'GB Ram, ' +
                 (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + vm.config.quota + 'GB disk. Created at ' + createdAt + '. ' +
                 (owner? ('Owned by ' + owner) + '. ': ''),
             icons: this.iconsOfVM(vm)

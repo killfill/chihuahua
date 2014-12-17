@@ -1,7 +1,8 @@
 var FiFo = require('nfifo/fifo'),
     Datasets = require('./datasets'),
     Vms = require('./vms'),
-    Orgs = require('./orgs')
+    Orgs = require('./orgs'),
+    Packages = require('./packages')
 
 module.exports = {
     login: function(endpoint, login, password) {
@@ -17,9 +18,15 @@ module.exports = {
             fifo.send('vms').get({headers: {'x-full-list': true}}, function(err, req, vms) {
                 fifo.send('datasets').get({headers: {'x-full-list': true}}, function(err, req, datasets) {
                     fifo.send('orgs').get({headers: {'x-full-list': true}}, function(err, req, orgs) {
-                        Orgs.setList(orgs)
-                        Datasets.setList(datasets)
-                        Vms.setList(vms)
+                        fifo.send('packages').get({headers: {'x-full-list': true}}, function(err, req, packages) {
+
+                            Packages.setList(packages)
+                            console.log('packages', packages)
+                            Orgs.setList(orgs)
+                            Datasets.setList(datasets)
+                            Vms.setList(vms)
+
+                        })
                     })
                 })
             })
