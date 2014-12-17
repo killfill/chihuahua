@@ -60,7 +60,7 @@ module.exports = React.createClass({
 
     //Get the menu that should be selected, from the URL
     getSelectedMenu: function() {
-        for (var i=0; i < menuItems.length-1; i++) {
+        for (var i=0; i < menuItems.length; i++) {
             var menu = menuItems[i]
             if (this.isActive(menu.route))
                 return i
