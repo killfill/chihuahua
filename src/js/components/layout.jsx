@@ -5,7 +5,8 @@ var React = require('React'),
     LoginDialog = require('./login-dialog.jsx'),
 
     Vms = require('../stores/vms'),
-    Datasets = require('../stores/datasets')
+    Datasets = require('../stores/datasets'),
+    Orgs = require('../stores/orgs')
 
 var AppCanvas = mui.AppCanvas,
     AppBar = mui.AppBar,
@@ -33,57 +34,21 @@ function title(txt) {
 
 module.exports = React.createClass({
 
-
     getInitialState: function() {
-        return {
-            listItems: []
-        }
+        return {listItems: []}
     },
 
-    VmsListChanged: function(vms) {
-
-        var items = vms.map(function(vm) {
-
-            var dataset = {
-                name: '',
-                os: 'unknown'
-            }
-            if (vm.config.dataset) {
-                var d = Datasets.get(vm.config.dataset)
-                if (d) {
-                    dataset.name = d.name + ' v' + d.version
-                    dataset.os = d.os
-                }
-            }
-
-            var createdAt = vm.config.created_at.split('T')[0]
-
-            return {
-                image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
-                // image: 'https://nube.virtualizado.cl/images/logos/linux.png',
-                title: title(vm.config.alias),
-                date: title(vm.state),
-                description:
-                    (dataset.name? (title(dataset.name) + '. '): '') +
-                    // title("ubuntun") + ' ' + 'XXX14.02' + '. ' +
-                    title('small') + ' machine with ' + (vm.config.ram/1024) + 'GB Ram, ' +
-                    (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + vm.config.quota + 'GB disk. Created at ' + createdAt + '. ' +
-                    (vm.owner? ('Owned by ' + vm.owner): ''),
-                icons: this.iconsOfVM(vm)
-            }
-        }.bind(this))
-
-        this.setState({listItems: items})
-
-    },
     componentDidMount: function() {
         Vms.subscribe(this.VmsListChanged)
     },
-
     componentWillUnmount: function() {
         Vms.unsubscribe(this.VmsListChanged)
     },
 
+    VmsListChanged: function(vms) {
+        var items = vms.map(this.vmForList)
+        this.setState({listItems: items})
+    },
     render: function() {
 
         var menuItems = [
@@ -112,13 +77,53 @@ module.exports = React.createClass({
                 <mui.LeftNav className='sidebar-menu' ref="sidebar" header={<SidebarHeader/>} menuItems={menuItems} selectedIndex={0} docked={false} isInitiallyOpen={false} onChange={this.menuSelected} />
                 <mui.FloatingActionButton className='create-vm-button' icon="content-add" mini={true} />
 
-                <List items={this.state.listItems}/>
+                <div className='mui-app-content-canvas'>
+                    <List items={this.state.listItems}/>
+                </div>
 
                 <LoginDialog />
 
             </AppCanvas>
         )
 
+    },
+
+    vmForList: function(vm) {
+
+        var dataset = {
+            name: '',
+            os: 'unknown'
+        }
+
+        if (vm.config.dataset) {
+            var d = Datasets.get(vm.config.dataset)
+            if (d) {
+                dataset.name = d.name + ' v' + d.version
+                dataset.os = d.os
+            }
+        }
+
+        var createdAt = vm.config.created_at.split('T')[0]
+
+        var owner = false
+        if (vm.owner) {
+
+            var o = Orgs.get(vm.owner)
+            if (o)
+                owner = o.name
+        }
+
+        return {
+            image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
+            title: title(vm.config.alias),
+            date: title(vm.state),
+            description:
+                (dataset.name? (title(dataset.name) + '. '): '') +
+                title('small') + ' machine with ' + (vm.config.ram/1024) + 'GB Ram, ' +
+                (vm.config.vcpus || (vm.config.cpu_cap / 100)) + 'vCPU and ' + vm.config.quota + 'GB disk. Created at ' + createdAt + '. ' +
+                (owner? ('Owned by ' + owner) + '. ': ''),
+            icons: this.iconsOfVM(vm)
+        }
     },
 
     menuSelected: function(e, idx, item) {

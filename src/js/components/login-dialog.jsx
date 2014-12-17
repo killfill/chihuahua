@@ -16,17 +16,11 @@ module.exports = React.createClass({
     componentDidMount: function() {
         this.refs.user.focus()
         this.refs.backend.setValue('https://nube.virtualizado.cl')
-
-
-        // this.refs.dialog.refs.dialogWindow._handleOverlayTouchTap = function() {
-        //     console.log('blblblblock')
-        // }
-        console.log(this.refs.dialog.refs.dialogWindow)
     },
 
     render: function() {
         return (<mui.Dialog ref='dialog'
-            title='FiFo Mobile UI'
+            title='Welcome'
             className='login-dialog'
             openImmediately={true}
             actions={[{text: 'Login', onClick: this.handleLogin}]}>
