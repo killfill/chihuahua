@@ -14,7 +14,7 @@ module.exports = React.createClass({
                 </div>
 
                 <div className="content">
-                    <div className='title'>{item.title}</div>
+                    <div className='title' dangerouslySetInnerHTML={{__html: item.title}}></div>
                     <div className='date'>{item.date}</div>
                     <span className='description' dangerouslySetInnerHTML={{__html: item.description}}></span>
                     <span className='bages'>

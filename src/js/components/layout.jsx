@@ -127,9 +127,14 @@ module.exports = React.createClass({
             disk = vm.config.disks.map(function(d) {return Math.round(d.size/1000) + 'GB'}).join('+')
         }
 
+        var vmTitle = title(vm.config.alias)
+        if (vm.metadata.jingles && vm.metadata.jingles.color)
+            vmTitle = '<span style="color: ' + vm.metadata.jingles.color + '">' + vmTitle + '</span>'
+        // if (vm.metadata.jingles.color || locked)
+
         return {
             image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
-            title: title(vm.config.alias),
+            title: vmTitle,
             date: title(vm.state),
             description:
                 (dataset.name? (dataset.name + '. '): '') +
