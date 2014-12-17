@@ -1,5 +1,6 @@
 var React = require('react'),
     mui = require('material-ui'),
+    Router = require('react-router'),
     Gravatar = require('./gravatar.jsx')
 
 var SidebarHeader = React.createClass({
@@ -24,25 +25,46 @@ var SidebarHeader = React.createClass({
 })
 
 var menuItems = [
-    { route: 'get-started', text: 'Dashboard', icon: 'action-dashboard'},
-    { route: 'get-started', text: 'Machines', icon: 'hardware-desktop-windows', number: "13"},
-    { route: 'css-framework', text: 'Datasets', icon: 'action-wallet-travel'},
-    { route: 'components', text: 'Nodes', icon: 'device-storage'},
-    { route: 'exit', text: 'Log out', icon: 'action-label-outline' }
+    { route: '/', text: 'Dashboard', icon: 'action-dashboard'},
+    { route: '/machines', text: 'Machines', icon: 'hardware-desktop-windows', number: "-7"},
+    { route: '/datasets', text: 'Datasets', icon: 'action-wallet-travel'},
+    // { route: 'noders', text: 'Nodes', icon: 'device-storage'},
+    { route: '/logout', text: 'Logout', icon: 'action-label-outline' }
 ];
 
 module.exports = React.createClass({
+
+    mixins: [Router.Navigation, Router.State],
+
     render: function() {
         return (
-            <mui.LeftNav className='sidebar-menu' ref="leftnav" 
-            header={<SidebarHeader/>} menuItems={menuItems} 
-            selectedIndex={0} docked={false} isInitiallyOpen={false} 
-            onChange={this.menuSelected} />
+            <mui.LeftNav
+                className='sidebar-menu'
+                ref="leftnav"
+                header={<SidebarHeader/>}
+                menuItems={menuItems}
+                selectedIndex={this.getSelectedMenu()}
+                docked={false}
+                isInitiallyOpen={false}
+                onChange={this.menuSelected} />
         )
     },
 
     toggle: function() {
         this.refs.leftnav.toggle()
+    },
+
+    menuSelected: function(e, key, menu) {
+        this.transitionTo(menu.route)
+    },
+
+    //Get the menu that should be selected, from the URL
+    getSelectedMenu: function() {
+        for (var i=0; i < menuItems.length-1; i++) {
+            var menu = menuItems[i]
+            if (this.isActive(menu.route))
+                return i
+        }
     }
 
 })

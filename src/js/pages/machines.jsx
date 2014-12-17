@@ -1,30 +1,23 @@
-var React = require('React'),
+var React = require('react'),
     damals = require('damals'),
-    mui = require('material-ui'),
-    helpers = require('../utils/helpers')
-    Gravatar = require('./gravatar.jsx'),
-    List = require('./list.jsx'),
-    LoginDialog = require('./login-dialog.jsx'),
-    Sidebar = require('./sidebar.jsx')
+    helpers = require('../utils/helpers'),
+    List = require('../components/list.jsx'),
 
     Vms = require('../stores/vms'),
     Datasets = require('../stores/datasets'),
     Orgs = require('../stores/orgs'),
     Packages = require('../stores/packages')
 
-var AppCanvas = mui.AppCanvas,
-    AppBar = mui.AppBar,
-    FloatingActionButton = mui.FloatingActionButton
-
 module.exports = React.createClass({
-
+    
     getInitialState: function() {
-        return {listItems: []}
+        return {listItems: Vms.getAll().map(this.vmForList)}
     },
 
     componentDidMount: function() {
         Vms.subscribe(this.VmsListChanged)
     },
+
     componentWillUnmount: function() {
         Vms.unsubscribe(this.VmsListChanged)
     },
@@ -35,44 +28,9 @@ module.exports = React.createClass({
     },
 
     render: function() {
-
-        rightMenuItems = [
-          { payload: '1', text: 'Hello' },
-          { payload: '2', text: 'There' }
-        ];
-
-        var title = 'Machines'
-
-        return (
-            <AppCanvas predefinedLayout={1}>
-
-                <AppBar title={title} onMenuIconButtonTouchTap={this.menuToggle}>
-                    <mui.DropDownIcon comentario='estos son contextuales...' icon='navigation-more-vert' menuItems={rightMenuItems} />
-                    <mui.IconButton icon='action-search' tooltip='Search' />
-                </AppBar>
-
-                <Sidebar ref='sidebar' />
-                <mui.FloatingActionButton className='create-vm-button' icon='content-add' mini={true} />
-
-                <div className='mui-app-content-canvas'>
-                    <List items={this.state.listItems}/>
-                </div>
-
-                <LoginDialog />
-
-            </AppCanvas>
-        )
-
+        return <List items={this.state.listItems}/>
     },
 
-    menuToggle: function() {
-        this.refs.sidebar.toggle()
-    },
-
-    menuSelected: function(e, idx, item) {
-        console.log('---->', item, idx)
-        // this.transitionTo(payload.route);
-    },
 
     vmForList: function(vm) {
 
@@ -95,7 +53,6 @@ module.exports = React.createClass({
 
         var owner = false
         if (vm.owner) {
-
             var o = Orgs.get(vm.owner)
             if (o)
                 owner = o.name
@@ -141,14 +98,15 @@ module.exports = React.createClass({
     },
 
     iconsOfVM: function(vm) {
-
         var icons = []
 
         if (vm.metadata && vm.metadata.jingles && vm.metadata.jingles.notes)
             icons.push({icon: 'communication-email', alt: 'Has notes'})
+
         if (Object.keys(vm.backups).length) {
             icons.push({icon: 'action-backup', alt: 'Has backups'})
         }
+
         if (vm.snapshots && Object.keys(vm.snapshots).length) //TODO: En verdad los backups tambien se meten aqui.. tendria que sacarlos.. :P
             icons.push({icon: 'image-photo-camera', alt: 'Has snapshots'})
 
@@ -158,6 +116,7 @@ module.exports = React.createClass({
         //If the history of the VM was changed < 2 days, show it as 'active'
         var recent = 1 * 24 * 3600,
             lastLog = vm.log[vm.log.length-1]
+
         if (Date.now() - lastLog.date/1000 < recent * 1000)
             icons.push({icon: 'action-history', alt: 'Has recent history activity'})
 
@@ -167,4 +126,3 @@ module.exports = React.createClass({
         return icons
     }
 })
-
