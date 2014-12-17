@@ -78,7 +78,7 @@ module.exports = React.createClass({
 
         var dataset = {
             name: '',
-            os: false //'unknown'
+            os: false
         }
 
         if (vm.config.dataset) {
@@ -87,6 +87,8 @@ module.exports = React.createClass({
                 dataset.name = '<b>' + helpers.titelize(d.name) + '</b> v' + d.version
                 dataset.os = d.os
             }
+            else
+                dataset.os = 'unknown'
         }
 
         var createdAt = damals(Date.parse(vm.config.created_at))
