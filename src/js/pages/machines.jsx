@@ -15,14 +15,14 @@ module.exports = React.createClass({
     },
 
     componentDidMount: function() {
-        Vms.subscribe(this.listChanged)
+        Vms.subscribe(this.storeChanged)
     },
 
     componentWillUnmount: function() {
-        Vms.unsubscribe(this.listChanged)
+        Vms.unsubscribe(this.storeChanged)
     },
 
-    listChanged: function(list) {
+    storeChanged: function(list) {
         var items = list.map(this.forList)
         this.setState({list: items})
     },

@@ -12,7 +12,7 @@ function Store() {
 
 	this.set = function(id, obj) {
 		this.data[id] = obj
-		this.emit()
+		// this.emit()
 	},
 
 	this.get = function(id) {
@@ -21,12 +21,12 @@ function Store() {
 
 	this.update = function(id, newParams) {
 		merge(this.data[id], newParams)
-		this.emit()
+		// this.emit()
 	}
 
 	this.remove = function(id) {
 		delete this.data[id]
-		this.emit()
+		// this.emit()
 	}
 
 	this.getAll = function() {
@@ -39,7 +39,7 @@ function Store() {
 			throw new Error('Data must by a hash!')
 
 		this.data = data
-		this.emit()
+		// this.emit()
 	},
 
 	this.setDataArray = function(data, id) {
@@ -52,7 +52,7 @@ function Store() {
 			this.data[obj[id]] = obj
 		}.bind(this))
 
-		this.emit()
+		// this.emit()
 	},
 
 

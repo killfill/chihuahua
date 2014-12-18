@@ -39,7 +39,6 @@ module.exports = React.createClass({
                     <RouteHandler/>
                 </div>
 
-                <LoginDialog />
 
             </mui.AppCanvas>
         )

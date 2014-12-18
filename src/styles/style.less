@@ -22,17 +22,39 @@
     z-index: 1;
 }
 
-//The Login Dialog.
-.login-dialog .mui-dialog-window-contents {
-	background-image: url(https://project-fifo.net/images/cloud-banner-2.jpg);
-	background-position: top;
+//Login page
+.login-page {
+    z-index: 10;
+    background-color: #E0EEF9;
+    background-image: url(https://project-fifo.net/images/cloud-banner-2.jpg);
+    background-position: top;
+    background-repeat: no-repeat;
 
-	.mui-input-placeholder {
-		color: @grey-800;
-	}
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
 
-	.mui-dialog-title {
-		text-align: center
-	}
+    .login-content {
+        margin: 16px auto 0 auto;
+        max-width: @input-width;
+
+        .welcome {
+            text-align: center;
+            h2, h4 {
+                color: white;
+                text-shadow: 1px 1px #222;
+            }
+        }
+
+        .mui-raised-button {
+            display: block;
+        }
+
+        .mui-input-placeholder, .mui-input-description, .mui-input-hightlight {
+            color: @dark-black !important;
+        }
+    }
+
 }
-

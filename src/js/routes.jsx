@@ -9,13 +9,15 @@ var React = require('react'),
     Dashboard = require('./pages/dashboard.jsx'),
     Machines = require('./pages/machines.jsx'),
     Datasets = require('./pages/datasets.jsx'),
-    Logout = require('./pages/logout.jsx')
+    Logout = require('./pages/logout.jsx'),
+    Login = require('./pages/login.jsx')
 
 
 module.exports = (
     <Route name='root' path='/' handler={Layout}>
         <Route name='machines' handler={Machines}/>
         <Route name='datasets' handler={Datasets}/>
+        <Route name='login' handler={Login}/>
         <Route name='logout' handler={Logout}/>
         <DefaultRoute handler={Dashboard} />
     </Route>

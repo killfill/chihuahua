@@ -12,14 +12,14 @@ module.exports = React.createClass({
     },
 
     componentDidMount: function() {
-        Datasets.subscribe(this.listChanged)
+        Datasets.subscribe(this.storeChanged)
     },
 
     componentWillUnmount: function() {
-        Datasets.unsubscribe(this.listChanged)
+        Datasets.unsubscribe(this.storeChanged)
     },
 
-    listChanged: function(list) {
+    storeChanged: function(list) {
         var items = list.map(this.forList)
         this.setState({list: items})
     },
@@ -43,12 +43,14 @@ module.exports = React.createClass({
         if (usedIn)
             icons.push({icon: 'hardware-desktop-windows', alt: 'In use'})
 
-        if (dataset.metadata.homepage)
+        if (dataset.metadata.homepage && dataset.metadata.homepage.indexOf('joyent.com') < 0)
+            icons.push({icon: 'social-people', alt: 'By the community'})
+
+        if (dataset.metadata.homepage) {}
             icons.push({icon: 'action-home', alt: 'Has a homepage'})
 
         if (dataset.requirements.length)
             icons.push({icon: 'communication-clear-all', alt: 'Has requirements'})
-
 
         //It looks like when zone, its in bytes. Kvm is in MB
         var MB = dataset.type === 'zone'
