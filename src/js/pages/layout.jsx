@@ -2,13 +2,11 @@ var React = require('react'),
     Router = require('react-router'),
     mui = require('material-ui'),
     RouteHandler = require('react-router').RouteHandler,
+    Session = require('../stores/session'),
 
     Sidebar = require('../components/sidebar.jsx'),
     List = require('../components/list.jsx'),
     titelize = require('../utils/helpers').titelize
-
-//This should not be here.. :P
-var LoginDialog = require('../components/login-dialog.jsx')
 
 module.exports = React.createClass({
 

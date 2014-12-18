@@ -11,7 +11,7 @@ Session.set('state', {
     data: {}
 })
 
-D.register(function(payload) {
+Session.dispatchToken = D.register(function(payload) {
 
     var action = payload.action,
         source = payload.source
@@ -38,5 +38,5 @@ D.register(function(payload) {
     }
 
     Session.emit()
-    return false
+    return true
 })

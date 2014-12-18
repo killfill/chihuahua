@@ -2,11 +2,21 @@ var D = require('../dispatcher')
 
 module.exports = {
 
-    setList: function(list) {
+    requestList: function() {
+
         D.handleViewAction({
-            actionType: 'ORGS_LIST',
-            list: list
+            actionType: 'ORGS_LIST_REQ'
         })
+
+        fifo.send('orgs').get({headers: {'x-full-list': true}}, function(err, res, body) {
+
+            D.handleServerAction({
+                actionType: 'ORGS_LIST_RES',
+                list: body,
+                succeed: res.statusCode === 200
+            })
+        })
+
     }
 
 }

@@ -9,7 +9,7 @@ D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'PACKAGES_LIST':
+        case 'PACKAGES_LIST_RES':
             Packages.setDataArray(action.list, 'uuid')
             break;
 

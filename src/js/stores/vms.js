@@ -1,6 +1,8 @@
 
 var Store = require('../utils/Store.js'),
-    D = require('../dispatcher')
+    D = require('../dispatcher'),
+    Actions = require('../actions'),
+    Session = require('./session')
 
 var Vms = module.exports = new Store()
 
@@ -14,24 +16,30 @@ Vms.sortBy = function(a, b) {
     return _b - _a
 }
 
-D.register(function(payload) {
+Vms.dispatchToken = D.register(function(payload) {
     var action = payload.action
 
     switch (action.actionType) {
 
-        case 'VMS_NEW':
-            Vms.set(action.vm.uuid, action.vm)
-            break;
-
-        case 'VMS_LIST':
+        case 'VMS_LIST_RES':
             Vms.setDataArray(action.list, 'uuid')
             break;
 
-        // default:
-        //  return true //Needed by promise in Dispatcher.
+        // case 'SESSION_LOGIN_RES':
+        //     //Wait for the Session store to 
+        //     console.log('---->', Session.dispatchToken, Vms.dispatchToken)
+        //     D.waitFor([Session.dispatchToken])
+        //     console.log('VM store', action)
+        //     if (!action.success) return
+
+        //     // setTimeout(function() {
+        //         Actions.vms.requestList()
+        //     // }, 1000)
+        //     break;
+
 
     }
 
     Vms.emit()
-    return false
+    return true
 })

@@ -3,7 +3,9 @@ var FiFo = require('nfifo/fifo'),
     Datasets = require('./datasets'),
     Vms = require('./vms'),
     Orgs = require('./orgs'),
-    Packages = require('./packages')
+    Packages = require('./packages'),
+
+    Session = require('../stores/session')
 
 module.exports = {
     login: function(endpoint, login, password) {
@@ -19,29 +21,24 @@ module.exports = {
 
         fifo.login(login, password, function(err, res, body) {
 
-            D.handleServerAction({
-                actionType: 'SESSION_LOGIN_RES',
-                success: res? res.statusCode === 200: false,
-                error: err? err.message: null,
-                data: body || {}
+
+            Session.set('state', {
+                isPending: false,
+                isLogged: res? res.statusCode === 200: false,
+                error: err && err.message,
+                data: body || {}
             })
+            Session.emit()
 
-            // //TODO: x-full-list-fields <----
-            // fifo.send('vms').get({headers: {'x-full-list': true}}, function(err, req, vms) {
-            //     fifo.send('datasets').get({headers: {'x-full-list': true}}, function(err, req, datasets) {
-            //         fifo.send('orgs').get({headers: {'x-full-list': true}}, function(err, req, orgs) {
-            //             fifo.send('packages').get({headers: {'x-full-list': true}}, function(err, req, packages) {
+            //WARNING: I had to avoid this because of  https://github.com/facebook/flux/issues/106
+            //So lets bypass this for now, setting the data in the store directly :(
 
-            //                 Packages.setList(packages)
-            //                 Orgs.setList(orgs)
-            //                 Datasets.setList(datasets)
-            //                 Vms.setList(vms)
-
-            //             })
-            //         })
-            //     })
+            // D.handleServerAction({
+            //     actionType: 'SESSION_LOGIN_RES',
+            //     success: res? res.statusCode === 200: false,
+            //     error: err? err.message: null,
+            //     data: body || {}
             // })
-
 
         })
 

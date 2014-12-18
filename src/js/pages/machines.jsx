@@ -2,6 +2,8 @@ var React = require('react'),
     damals = require('damals'),
     helpers = require('../utils/helpers'),
     List = require('../components/list.jsx'),
+    Autenticated = require('../mixins/auth'),
+    Actions = require('../actions'),
 
     Vms = require('../stores/vms'),
     Datasets = require('../stores/datasets'),
@@ -9,13 +11,20 @@ var React = require('react'),
     Packages = require('../stores/packages')
 
 module.exports = React.createClass({
-    
+
+    mixins: [Autenticated],
+
     getInitialState: function() {
         return {list: Vms.getAll().map(this.forList)}
     },
 
     componentDidMount: function() {
         Vms.subscribe(this.storeChanged)
+        window.x = Vms
+        var total = Vms.getAll().length
+        console.log('total', total)
+        if (total < 1)
+            Actions.vms.requestList()
     },
 
     componentWillUnmount: function() {

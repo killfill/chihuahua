@@ -56,8 +56,17 @@ module.exports = React.createClass({
     storeChanged: function(list) {
 
         var res = Session.get('state')
-        if (res.isLogged)
+        if (res.isLogged) {
+
+            //How dirty!
+            Actions.vms.requestList()
+            Actions.datasets.requestList()
+            Actions.packages.requestList()
+            Actions.orgs.requestList()
+
             return this.transitionTo('root')
+
+        }
 
         this.state.isPending = res.isPending
         this.state.errorMsg = res.error

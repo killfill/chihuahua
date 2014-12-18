@@ -1,8 +1,12 @@
-var React = require('react')
+var React = require('react'),
+    Autenticated = require('../mixins/auth')
 
 
 module.exports = React.createClass({
-	render: function() {
-		return <div>DASH</div>
-	}
+
+    mixins: [Autenticated],
+
+    render: function() {
+        return <div>DASH</div>
+    }
 })

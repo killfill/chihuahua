@@ -1,12 +1,15 @@
 var React = require('react'),
     titelize = require('../utils/helpers').titelize,
     List = require('../components/list.jsx'),
+    Autenticated = require('../mixins/auth'),
 
     Vms = require('../stores/vms'),
     Datasets = require('../stores/datasets')
 
 module.exports = React.createClass({
-    
+
+    mixins: [Autenticated],
+
     getInitialState: function() {
         return {list: Datasets.getAll().map(this.forList)}
     },

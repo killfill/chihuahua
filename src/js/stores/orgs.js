@@ -9,7 +9,7 @@ D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'ORGS_LIST':
+        case 'ORGS_LIST_RES':
             Datasets.setDataArray(action.list, 'uuid')
             break;
 
