@@ -1,7 +1,9 @@
 var React = require('react'),
     mui = require('material-ui'),
     Router = require('react-router'),
-    Gravatar = require('./gravatar.jsx')
+    Gravatar = require('./gravatar.jsx'),
+
+    Vms = require('../stores/vms')
 
 var SidebarHeader = React.createClass({
     render: function() {
@@ -24,17 +26,34 @@ var SidebarHeader = React.createClass({
     }
 })
 
-var menuItems = [
-    { route: '/', text: 'Dashboard', icon: 'action-dashboard'},
-    { route: '/machines', text: 'Machines', icon: 'hardware-desktop-windows', number: "-7"},
-    { route: '/datasets', text: 'Datasets', icon: 'action-wallet-travel'},
-    // { route: 'noders', text: 'Nodes', icon: 'device-storage'},
-    { route: '/logout', text: 'Logout', icon: 'action-label-outline' }
-];
-
 module.exports = React.createClass({
 
     mixins: [Router.Navigation, Router.State],
+
+    getInitialState: function() {
+        return {
+            menuItems: [
+                { route: '/', text: 'Dashboard', icon: 'action-dashboard'},
+                { route: '/machines', text: 'Machines', icon: 'hardware-desktop-windows', number: Vms.getAll().length || ''},
+                { route: '/datasets', text: 'Datasets', icon: 'action-wallet-travel'},
+                // { route: 'noders', text: 'Nodes', icon: 'device-storage'},
+                { route: '/logout', text: 'Logout', icon: 'action-label-outline' }
+            ]
+        }
+    },
+
+    componentDidMount: function() {
+        Vms.subscribe(this.vmsChanged)
+    },
+
+    componentWillUnmount: function() {
+        Vms.unsubscribe(this.vmsChanged)
+    },
+
+    vmsChanged: function(vms) {
+        this.state.menuItems[1].number = vms.length.toString()
+        this.setState({menuItems: this.state.menuItems})
+    },
 
     render: function() {
         return (
@@ -42,7 +61,7 @@ module.exports = React.createClass({
                 className='sidebar-menu'
                 ref="leftnav"
                 header={<SidebarHeader/>}
-                menuItems={menuItems}
+                menuItems={this.state.menuItems}
                 selectedIndex={this.getSelectedMenu()}
                 docked={false}
                 isInitiallyOpen={false}
@@ -60,8 +79,8 @@ module.exports = React.createClass({
 
     //Get the menu that should be selected, from the URL
     getSelectedMenu: function() {
-        for (var i=0; i < menuItems.length; i++) {
-            var menu = menuItems[i]
+        for (var i=0; i < this.state.menuItems.length; i++) {
+            var menu = this.state.menuItems[i]
             if (this.isActive(menu.route))
                 return i
         }

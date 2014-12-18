@@ -4,6 +4,17 @@ var Store = require('../utils/Store.js'),
 
 var Datasets = module.exports = new Store()
 
+//Order by Name
+Datasets.sortBy = function(a, b) {
+
+    var _a = a.name.toLowerCase() + a.version,
+        _b = b.name.toLowerCase() + b.version
+
+    if (_a < _b) return -1
+    if (_a > _b) return 1
+    return 0
+}
+
 D.register(function(payload) {
     var action = payload.action
 

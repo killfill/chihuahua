@@ -31,7 +31,7 @@ function Store() {
 
 	this.getAll = function() {
 		var data = this.data
-		return Object.keys(data).map(function(k) {return data[k]})
+		return Object.keys(data).map(function(k) {return data[k]}).sort(this.sortBy)
 	}
 
 	this.setData = function(data) {
@@ -70,8 +70,12 @@ function Store() {
 	this.emit = function() {
 		var data = this.getAll()
 		this.listeners.forEach(function(cb) {cb(data)})
-	}
+	},
 
+	//Overrides
+	this.sortBy = function(a, b) {
+		return -1
+	}
 
 }
 

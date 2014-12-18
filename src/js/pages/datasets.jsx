@@ -19,8 +19,8 @@ module.exports = React.createClass({
         Datasets.unsubscribe(this.listChanged)
     },
 
-    listChanged: function(vms) {
-        var items = vms.map(this.forList)
+    listChanged: function(list) {
+        var items = list.map(this.forList)
         this.setState({list: items})
     },
 
@@ -28,16 +28,27 @@ module.exports = React.createClass({
         return <List items={this.state.list}/>
     },
 
-
     forList: function(dataset) {
 
+
+        var usedIn = Vms.getAll().map(function(vm) {
+                        return vm.config.dataset === dataset.uuid
+                    }).filter(function(o) {return o}).length,
+
+            usedBy = usedIn? 'Used by ' + usedIn + ' VMs. ' : 'Used by no VMs. '
+
+
         var icons = []
+
+        if (usedIn)
+            icons.push({icon: 'hardware-desktop-windows', alt: 'In use'})
 
         if (dataset.metadata.homepage)
             icons.push({icon: 'action-home', alt: 'Has a homepage'})
 
         if (dataset.requirements.length)
             icons.push({icon: 'communication-clear-all', alt: 'Has requirements'})
+
 
         //It looks like when zone, its in bytes. Kvm is in MB
         var MB = dataset.type === 'zone'
@@ -48,8 +59,6 @@ module.exports = React.createClass({
         if (dataset.networks.length > 1)
             networks = 'Requires ' + dataset.networks.length + ' networks. '
 
-
-
         return {
             image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
             title: titelize(dataset.name) + ' v' + dataset.version,
@@ -57,8 +66,10 @@ module.exports = React.createClass({
             icons: icons,
             description:
                 MB + 'MB. ' +
+                usedBy +
                 dataset.description +
                 networks
         }
-    }
+    },
+
 })

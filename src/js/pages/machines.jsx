@@ -22,15 +22,14 @@ module.exports = React.createClass({
         Vms.unsubscribe(this.listChanged)
     },
 
-    listChanged: function(vms) {
-        var items = vms.map(this.forList)
+    listChanged: function(list) {
+        var items = list.map(this.forList)
         this.setState({list: items})
     },
 
     render: function() {
         return <List items={this.state.list}/>
     },
-
 
     forList: function(vm) {
 
@@ -42,7 +41,7 @@ module.exports = React.createClass({
         if (vm.config.dataset) {
             var d = Datasets.get(vm.config.dataset)
             if (d) {
-                dataset.name = '<b>' + helpers.titelize(d.name) + '</b> v' + d.version
+                dataset.name = helpers.titelize(d.name) + ' v' + d.version
                 dataset.os = d.os
             }
             else
