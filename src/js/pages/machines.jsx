@@ -11,28 +11,28 @@ var React = require('react'),
 module.exports = React.createClass({
     
     getInitialState: function() {
-        return {listItems: Vms.getAll().map(this.vmForList)}
+        return {list: Vms.getAll().map(this.forList)}
     },
 
     componentDidMount: function() {
-        Vms.subscribe(this.VmsListChanged)
+        Vms.subscribe(this.listChanged)
     },
 
     componentWillUnmount: function() {
-        Vms.unsubscribe(this.VmsListChanged)
+        Vms.unsubscribe(this.listChanged)
     },
 
-    VmsListChanged: function(vms) {
-        var items = vms.map(this.vmForList)
-        this.setState({listItems: items})
+    listChanged: function(vms) {
+        var items = vms.map(this.forList)
+        this.setState({list: items})
     },
 
     render: function() {
-        return <List items={this.state.listItems}/>
+        return <List items={this.state.list}/>
     },
 
 
-    vmForList: function(vm) {
+    forList: function(vm) {
 
         var dataset = {
             name: '',
