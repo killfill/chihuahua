@@ -4,7 +4,7 @@ var Store = require('../utils/Store.js'),
     Actions = require('../actions'),
     Session = require('./session')
 
-var Vms = module.exports = new Store()
+var Vms = module.exports = new Store({resource: 'vms'})
 
 //Order by last log (history)
 Vms.sortBy = function(a, b) {
@@ -25,19 +25,9 @@ Vms.dispatchToken = D.register(function(payload) {
             Vms.setDataArray(action.list, 'uuid')
             break;
 
-        // case 'SESSION_LOGIN_RES':
-        //     //Wait for the Session store to 
-        //     console.log('---->', Session.dispatchToken, Vms.dispatchToken)
-        //     D.waitFor([Session.dispatchToken])
-        //     console.log('VM store', action)
-        //     if (!action.success) return
-
-        //     // setTimeout(function() {
-        //         Actions.vms.requestList()
-        //     // }, 1000)
-        //     break;
-
-
+        case 'SESSION_LOGIN_RES':
+            Vms.requestList()
+            break;
     }
 
     Vms.emit()

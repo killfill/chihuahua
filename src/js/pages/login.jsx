@@ -3,7 +3,12 @@ var React = require('react'),
     mui = require('material-ui'),
     Actions = require('../actions'),
 
-    Session = require('../stores/session')
+    Session = require('../stores/session'),
+
+    Vms = require('../stores/vms'),
+    Packages = require('../stores/packages'),
+    Orgs = require('../stores/orgs'),
+    Datasets = require('../stores/datasets')
 
 module.exports = React.createClass({
 
@@ -56,17 +61,8 @@ module.exports = React.createClass({
     storeChanged: function(list) {
 
         var res = Session.get('state')
-        if (res.isLogged) {
-
-            //How dirty!
-            Actions.vms.requestList()
-            Actions.datasets.requestList()
-            Actions.packages.requestList()
-            Actions.orgs.requestList()
-
+        if (res.isLogged)
             return this.transitionTo('root')
-
-        }
 
         this.state.isPending = res.isPending
         this.state.errorMsg = res.error

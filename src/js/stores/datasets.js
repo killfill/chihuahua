@@ -2,7 +2,7 @@
 var Store = require('../utils/Store.js'),
     D = require('../dispatcher')
 
-var Datasets = module.exports = new Store()
+var Datasets = module.exports = new Store({resource: 'datasets'})
 
 //Order by Name
 Datasets.sortBy = function(a, b) {
@@ -24,8 +24,9 @@ D.register(function(payload) {
             Datasets.setDataArray(action.list, 'uuid')
             break;
 
-        // default:
-        //  return true //Needed by promise in Dispatcher.
+        case 'SESSION_LOGIN_RES':
+            Datasets.requestList()
+            break;
 
     }
 

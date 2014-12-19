@@ -1,81 +1,101 @@
 
 function merge(a,b) {
-	for (k in b) {
-		a[k] = b[k]
-	}
-	return a
+    for (k in b) {
+        a[k] = b[k]
+    }
+    return a
 }
 
-function Store() {
-	this.data = {}
-	this.listeners = []
+var Store = function (opts) {
 
-	this.set = function(id, obj) {
-		this.data[id] = obj
-		// this.emit()
-	},
+    /* Remote stuff: TODO: make this a mixin of Store... */
+    opts = opts || {}
+    this.resource = opts.resource || 'resource options is missing'
+    this.defaultHeaders = opts.defaultHeaders || {'x-full-list': true}
 
-	this.get = function(id) {
-		return this.data[id] || this.data[id.id]
-	},
+    this.requestList = function(headers) {
 
-	this.update = function(id, newParams) {
-		merge(this.data[id], newParams)
-		// this.emit()
-	}
+        var h = merge(headers || {}, this.defaultHeaders)
 
-	this.remove = function(id) {
-		delete this.data[id]
-		// this.emit()
-	}
+        fifo.send(this.resource).get({headers: h}, function(err, res, body) {
 
-	this.getAll = function() {
-		var data = this.data
-		return Object.keys(data).map(function(k) {return data[k]}).sort(this.sortBy)
-	}
+            this.setDataArray(body, 'uuid')
+            this.emit()
 
-	this.setData = function(data) {
-		if (typeof data !== 'object' || Array.isArray(data))
-			throw new Error('Data must by a hash!')
+        }.bind(this))
+    }
 
-		this.data = data
-		// this.emit()
-	},
+    /* End remote stuff */
 
-	this.setDataArray = function(data, id) {
-		if (typeof data !== 'object' || !Array.isArray(data))
-			throw new Error('Data must by an array!')
+    this.data = {}
+    this.listeners = []
 
-		id = id || 'id'
+    this.set = function(id, obj) {
+        this.data[id] = obj
+        // this.emit()
+    },
 
-		data.forEach(function(obj) {
-			this.data[obj[id]] = obj
-		}.bind(this))
+    this.get = function(id) {
+        return this.data[id] || this.data[id.id]
+    },
 
-		// this.emit()
-	},
+    this.update = function(id, newParams) {
+        merge(this.data[id], newParams)
+        // this.emit()
+    }
+
+    this.remove = function(id) {
+        delete this.data[id]
+        // this.emit()
+    }
+
+    this.getAll = function() {
+        var data = this.data
+        return Object.keys(data).map(function(k) {return data[k]}).sort(this.sortBy)
+    }
+
+    this.setData = function(data) {
+        if (typeof data !== 'object' || Array.isArray(data))
+            throw new Error('Data must by a hash!')
+
+        this.data = data
+        // this.emit()
+    },
+
+    this.setDataArray = function(data, id) {
+        if (typeof data !== 'object' || !Array.isArray(data))
+            throw new Error('Data must by an array!')
+
+        id = id || 'id'
+
+        data.forEach(function(obj) {
+            this.data[obj[id]] = obj
+        }.bind(this))
+
+        // this.emit()
+    },
 
 
-	//Event
-	this.subscribe = function(cb) {
-		this.listeners.push(cb)
-	},
+    //Event
+    this.subscribe = function(cb) {
+        this.listeners.push(cb)
+    },
 
-	//Event
-	this.unsubscribe = function(cb) {
-		delete this.listeners[cb]
-	},
+    //Event
+    this.unsubscribe = function(cb) {
+        delete this.listeners[cb]
+    },
 
-	//Event
-	this.emit = function() {
-		var data = this.getAll()
-		this.listeners.forEach(function(cb) {cb(data)})
-	},
+    //Event
+    this.emit = function() {
+        var data = this.getAll()
+        this.listeners.forEach(function(cb) {cb(data)})
+    },
 
-	//Overrides
-	this.sortBy = function(a, b) {
-		return -1
-	}
+    //Overrides
+    this.sortBy = function(a, b) {
+        return -1
+    }
 
 }
 

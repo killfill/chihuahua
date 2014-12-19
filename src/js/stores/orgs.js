@@ -2,7 +2,7 @@
 var Store = require('../utils/Store.js'),
     D = require('../dispatcher')
 
-var Datasets = module.exports = new Store()
+var Orgs = module.exports = new Store({resource: 'orgs'})
 
 D.register(function(payload) {
     var action = payload.action
@@ -10,14 +10,15 @@ D.register(function(payload) {
     switch (action.actionType) {
 
         case 'ORGS_LIST_RES':
-            Datasets.setDataArray(action.list, 'uuid')
+            Orgs.setDataArray(action.list, 'uuid')
             break;
 
-        // default:
-        //  return true //Needed by promise in Dispatcher.
+        case 'SESSION_LOGIN_RES':
+            Orgs.requestList()
+            break;
 
     }
 
-    Datasets.emit()
+    Orgs.emit()
     return false
 })

@@ -20,11 +20,6 @@ module.exports = React.createClass({
 
     componentDidMount: function() {
         Vms.subscribe(this.storeChanged)
-        window.x = Vms
-        var total = Vms.getAll().length
-        console.log('total', total)
-        if (total < 1)
-            Actions.vms.requestList()
     },
 
     componentWillUnmount: function() {

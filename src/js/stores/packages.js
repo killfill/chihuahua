@@ -2,7 +2,7 @@
 var Store = require('../utils/Store.js'),
     D = require('../dispatcher')
 
-var Packages = module.exports = new Store()
+var Packages = module.exports = new Store({resource: 'packages'})
 
 D.register(function(payload) {
     var action = payload.action
@@ -13,8 +13,9 @@ D.register(function(payload) {
             Packages.setDataArray(action.list, 'uuid')
             break;
 
-        // default:
-        //  return true //Needed by promise in Dispatcher.
+        case 'SESSION_LOGIN_RES':
+            Packages.requestList()
+            break;
 
     }
 

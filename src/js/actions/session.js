@@ -21,24 +21,12 @@ module.exports = {
 
         fifo.login(login, password, function(err, res, body) {
 
-
-            Session.set('state', {
-                isPending: false,
-                isLogged: res? res.statusCode === 200: false,
-                error: err && err.message,
-                data: body || {}
+            D.handleServerAction({
+                actionType: 'SESSION_LOGIN_RES',
+                success: res? res.statusCode === 200: false,
+                error: err? err.message: null,
+                data: body || {}
             })
-            Session.emit()
-
-            //WARNING: I had to avoid this because of  https://github.com/facebook/flux/issues/106
-            //So lets bypass this for now, setting the data in the store directly :(
-
-            // D.handleServerAction({
-            //     actionType: 'SESSION_LOGIN_RES',
-            //     success: res? res.statusCode === 200: false,
-            //     error: err? err.message: null,
-            //     data: body || {}
-            // })
 
         })
 
