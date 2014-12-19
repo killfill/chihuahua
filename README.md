@@ -1,6 +1,6 @@
 # Chihuahua!!
 
-<img src = "http://i.imgur.com/oJaMs.png" />
+<img src = "http://www.strangefunkidz.com/images/content/124114.jpg" />
 
 npm install
 
