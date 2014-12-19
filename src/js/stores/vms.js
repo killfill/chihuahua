@@ -23,13 +23,14 @@ Vms.dispatchToken = D.register(function(payload) {
 
         case 'VMS_LIST_RES':
             Vms.setDataArray(action.list, 'uuid')
+            Vms.emit()
             break;
 
         case 'SESSION_LOGIN_RES':
             Vms.requestList()
+            Vms.emit()
             break;
     }
 
-    Vms.emit()
     return true
 })

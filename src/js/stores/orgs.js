@@ -4,21 +4,21 @@ var Store = require('../utils/Store.js'),
 
 var Orgs = module.exports = new Store({resource: 'orgs'})
 
-D.register(function(payload) {
+Orgs.dispatchToken = D.register(function(payload) {
     var action = payload.action
 
     switch (action.actionType) {
 
         case 'ORGS_LIST_RES':
             Orgs.setDataArray(action.list, 'uuid')
+            Orgs.emit()
             break;
 
         case 'SESSION_LOGIN_RES':
             Orgs.requestList()
+            Orgs.emit()
             break;
-
     }
 
-    Orgs.emit()
     return false
 })

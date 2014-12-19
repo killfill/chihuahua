@@ -15,21 +15,22 @@ Datasets.sortBy = function(a, b) {
     return 0
 }
 
-D.register(function(payload) {
+Datasets.dispatchToken = D.register(function(payload) {
     var action = payload.action
 
     switch (action.actionType) {
 
         case 'DATASETS_LIST_RES':
             Datasets.setDataArray(action.list, 'uuid')
+            Datasets.emit()
             break;
 
         case 'SESSION_LOGIN_RES':
             Datasets.requestList()
+            Datasets.emit()
             break;
 
     }
 
-    Datasets.emit()
     return false
 })

@@ -8,11 +8,23 @@ var React = require('react'),
 require("react-tap-event-plugin")();
 
 
+//If session is saved in localStorage, trigger the login event, just like a successful login...
+if (localStorage.userSession) {
+    var userSession = JSON.parse(localStorage.userSession),
+        loginResult = require('./actions').session.loginResult
+
+    loginResult({
+        success: true,
+        data: userSession.data,
+        endpoint: userSession.endpoint
+    })
+}
+
+
 Router.run(routes, function(Handler) {
     React.render(<Handler/>, document.getElementById('here'))
 })
 
-// require('./actions').session.login('https://nube.virtualizado.cl', 'user', 'pass')
 
 if (process.env.NODE_ENV !== 'production')
     require('./live-reload')

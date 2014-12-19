@@ -4,7 +4,7 @@ var Store = require('../utils/Store.js'),
 
 var Session = module.exports = new Store()
 
-Session.set('state', {
+var defaultState = Session.set('state', {
     isPending: false,
     isLogged: false,
     error: null,
@@ -21,22 +21,31 @@ Session.dispatchToken = D.register(function(payload) {
         case 'SESSION_LOGIN_REQ':
             Session.get('state').isPending = true
             Session.get('state').error = null
+            Session.emit()
             break;
 
         case 'SESSION_LOGIN_RES':
-            Session.set('state', {
+            var state = Session.set('state', {
                 isPending: false,
                 isLogged: action.success,
                 error: action.error,
-                data: action.body
+                data: action.data,
+                endpoint: action.endpoint
             })
+            localStorage.setItem('userSession', JSON.stringify(state))
+            Session.emit()
             break;
-            
+
+        case 'SESSION_LOGOUT':
+            Session.set('state', defaultState)
+            localStorage.removeItem('userSession')
+            fifo.token = null
+            break;
+
         default:
             return false
 
     }
 
-    Session.emit()
     return true
 })

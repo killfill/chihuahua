@@ -2,7 +2,6 @@ var React = require('react'),
     Router = require('react-router'),
     mui = require('material-ui'),
     RouteHandler = require('react-router').RouteHandler,
-    Session = require('../stores/session'),
 
     Sidebar = require('../components/sidebar.jsx'),
     List = require('../components/list.jsx'),
@@ -26,7 +25,7 @@ module.exports = React.createClass({
             <mui.AppCanvas predefinedLayout={1}>
 
                 <mui.AppBar title={title} onMenuIconButtonTouchTap={this.menuToggle}>
-                    <mui.DropDownIcon comentario='estos son contextuales...' icon='navigation-more-vert' menuItems={rightMenuItems} />
+                    <mui.DropDownIcon icon='navigation-more-vert' menuItems={rightMenuItems} />
                     <mui.IconButton icon='action-search' tooltip='Search' />
                 </mui.AppBar>
 

@@ -33,6 +33,7 @@ var Store = function (opts) {
     this.set = function(id, obj) {
         this.data[id] = obj
         // this.emit()
+        return obj
     },
 
     this.get = function(id) {

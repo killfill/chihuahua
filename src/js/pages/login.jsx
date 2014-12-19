@@ -64,9 +64,10 @@ module.exports = React.createClass({
         if (res.isLogged)
             return this.transitionTo('root')
 
-        this.state.isPending = res.isPending
-        this.state.errorMsg = res.error
-        this.setState(this.state)
+        this.setState({
+            isPending: res.isPending,
+            errorMsg: res.error
+        })
     },
 
     handleLogin: function(e) {
