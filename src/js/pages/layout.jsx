@@ -5,7 +5,8 @@ var React = require('react'),
 
     Sidebar = require('../components/sidebar.jsx'),
     List = require('../components/list.jsx'),
-    titelize = require('../utils/helpers').titelize
+    titelize = require('../utils/helpers').titelize,
+    Session = require('../stores/session')
 
 module.exports = React.createClass({
 
@@ -20,6 +21,9 @@ module.exports = React.createClass({
 
         var title = titelize(this.getPath().slice(1))
         if (!title) title = 'Dashboard'
+
+        if (!Session.get('state').data.name)
+            return <RouteHandler/>
 
         return (
             <mui.AppCanvas predefinedLayout={1}>

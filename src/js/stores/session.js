@@ -32,7 +32,10 @@ Session.dispatchToken = D.register(function(payload) {
                 data: action.data,
                 endpoint: action.endpoint
             })
-            localStorage.setItem('userSession', JSON.stringify(state))
+
+            if (state.isLogged)
+                localStorage.setItem('userSession', JSON.stringify(state))
+
             Session.emit()
             break;
 

@@ -3,12 +3,35 @@ var React = require('react'),
     Router = require('react-router'),
     Gravatar = require('./gravatar.jsx'),
 
-    Vms = require('../stores/vms')
+    Vms = require('../stores/vms'),
+    Session = require('../stores/session')
 
 var SidebarHeader = React.createClass({
+
+    getInitialState: function() {
+
+        return {
+            username: Session.get('state').data.name
+        }
+    },
+
+    componentDidMount: function() {
+        Session.subscribe(this.sessionChanged)
+    },
+
+    componentWillUnmount: function() {
+        Session.unsubscribe(this.sessionChanged)
+    },
+
+    sessionChanged: function(){
+        this.setState({
+            username: Session.get('state').data.name
+        })
+    },
+
     render: function() {
 
-        var username = 'pneumann@gmail.com',
+        var username = this.state.username,
             size = 32
 
         var userIcon = <mui.Icon icon='social-person' style={{padding: '4px'}} />
@@ -34,7 +57,7 @@ module.exports = React.createClass({
         return {
             menuItems: [
                 { route: '/', text: 'Dashboard', icon: 'action-dashboard'},
-                { route: '/machines', text: 'Machines', icon: 'hardware-desktop-windows', number: Vms.getAll().length || ''},
+                { route: '/machines', text: 'Machines', icon: 'hardware-desktop-windows', number: Vms.getAll().length.toString() || ''},
                 { route: '/datasets', text: 'Datasets', icon: 'action-wallet-travel'},
                 // { route: 'noders', text: 'Nodes', icon: 'device-storage'},
                 { route: '/logout', text: 'Logout', icon: 'action-label-outline' }

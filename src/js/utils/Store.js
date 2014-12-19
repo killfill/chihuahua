@@ -84,7 +84,7 @@ var Store = function (opts) {
 
     //Event
     this.unsubscribe = function(cb) {
-        delete this.listeners[cb]
+        this.listeners.splice(this.listeners.indexOf(cb), 1);
     },
 
     //Event
