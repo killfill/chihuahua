@@ -1,16 +1,11 @@
 var FiFo = require('nfifo/fifo'),
     D = require('../dispatcher'),
-    Datasets = require('./datasets'),
-    Vms = require('./vms'),
-    Orgs = require('./orgs'),
-    Packages = require('./packages'),
-
     Session = require('../stores/session')
 
 module.exports = {
     login: function(endpoint, login, password) {
 
-        fifo = new FiFo(endpoint, login, password)
+        fifo = new FiFo(endpoint)
         fifo.defaultParams.headers = {'accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded'}
         fifo.defaultParams.json = false
 

@@ -43,8 +43,8 @@ module.exports = React.createClass({
 
         var icons = []
 
-        if (usedIn)
-            icons.push({icon: 'hardware-desktop-windows', alt: 'In use'})
+        if (usedIn < 1)
+            icons.push({icon: 'notification-do-not-disturb', alt: 'Not used by any VM'})
 
         if (dataset.metadata.homepage && dataset.metadata.homepage.indexOf('joyent.com') < 0)
             icons.push({icon: 'social-people', alt: 'By the community'})

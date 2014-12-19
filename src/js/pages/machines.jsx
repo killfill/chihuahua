@@ -120,7 +120,7 @@ module.exports = React.createClass({
         var recent = 1 * 24 * 3600,
             lastLog = vm.log[vm.log.length-1]
 
-        if (Date.now() - lastLog.date/1000 < recent * 1000)
+        if (lastLog && Date.now() - lastLog.date/1000 < recent * 1000)
             icons.push({icon: 'action-history', alt: 'Has recent history activity'})
 
         if (vm.metadata.jingles && vm.metadata.jingles.locked)
