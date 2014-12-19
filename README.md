@@ -1,4 +1,6 @@
-# Yet another Npm React Boilerplate
+# Chihuahua!!
+
+<img src = "http://i.imgur.com/oJaMs.png" />
 
 npm install
 
