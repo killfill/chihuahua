@@ -22,7 +22,7 @@ module.exports = React.createClass({
         var title = titelize(this.getPath().slice(1))
         if (!title) title = 'Dashboard'
 
-        if (!Session.get('state').data.name)
+        if (!Session.get('token'))
             return <RouteHandler/>
 
         return (

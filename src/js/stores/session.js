@@ -4,10 +4,10 @@ var Store = require('../utils/Store.js'),
 
 var Session = module.exports = new Store()
 
-var defaultState = Session.set('state', {
+var defaultSession = Session.set('current', {
     isPending: false,
     isLogged: false,
-    error: null,
+    error: false,
     data: {}
 })
 
@@ -19,29 +19,40 @@ Session.dispatchToken = D.register(function(payload) {
     switch (action.actionType) {
 
         case 'SESSION_LOGIN_REQ':
-            Session.get('state').isPending = true
-            Session.get('state').error = null
+            Session.get('current').isPending = true
+            Session.get('current').error = false
+
+            //Remember the endpoint
+            Session.set('endpoint', action.endpoint)
+            localStorage.endpoint = action.endpoint
+
             Session.emit()
             break;
 
         case 'SESSION_LOGIN_RES':
-            var state = Session.set('state', {
+
+            Session.set('token', action.token)
+            var state = Session.set('current', {
                 isPending: false,
                 isLogged: action.success,
                 error: action.error,
-                data: action.data,
-                endpoint: action.endpoint
+                data: action.data
             })
 
-            if (state.isLogged)
-                localStorage.setItem('userSession', JSON.stringify(state))
+            //Remember the token and user session.
+            if (state.isLogged) {
+                localStorage.userSession = JSON.stringify(state)
+                localStorage.token = action.token                
+            }
 
             Session.emit()
             break;
 
         case 'SESSION_LOGOUT':
-            Session.set('state', defaultState)
+            Session.set('current', defaultSession)
+            Session.remove('token')
             localStorage.removeItem('userSession')
+            localStorage.removeItem('token')
             fifo.token = null
             break;
 

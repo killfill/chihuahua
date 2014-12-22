@@ -1,30 +1,15 @@
-var FiFo = require('nfifo/fifo'),
-    D = require('../dispatcher'),
-    Session = require('../stores/session')
-
-function createFifo(opts) {
-
-    if (typeof fifo !== 'undefined')
-        return
-
-    fifo = new FiFo(opts.endpoint)
-    fifo.defaultParams.headers = {'accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded'}
-    fifo.defaultParams.json = false
-
-    if (opts.token)
-        fifo.token = opts.token
-
-}
+var D = require('../dispatcher'),
+    Session = require('../stores/session'),
+    helpers = require('../utils/helpers')
 
 module.exports = {
     login: function(endpoint, login, password) {
 
-        createFifo({
-            endpoint: endpoint
-        })
+        helpers.connectToFiFo(endpoint)
 
         D.handleViewAction({
-            actionType: 'SESSION_LOGIN_REQ'
+            actionType: 'SESSION_LOGIN_REQ',
+            endpoint: endpoint
         })
 
         fifo.login(login, password, function(err, res, body) {
@@ -32,6 +17,7 @@ module.exports = {
             this.loginResult({
                 success: res? res.statusCode === 200: false,
                 error: err? err.message: null,
+                token: body && body.session,
                 data: body || {},
                 endpoint: endpoint
             })
@@ -41,22 +27,20 @@ module.exports = {
 
     loginResult: function(params) {
 
-        createFifo({
-            endpoint: params.endpoint,
-            token: params.data.session
-        })
+        if (params.token)
+            fifo.token = params.token
 
         D.handleServerAction({
             actionType: 'SESSION_LOGIN_RES',
             success: params.success,
             error: params.error,
             data: params.data,
-            endpoint: params.endpoint
+            token: params.token
         })
     },
 
     logout: function() {
-        D.handleServerAction({
+        D.handleViewAction({
             actionType: 'SESSION_LOGOUT'
         })
     }

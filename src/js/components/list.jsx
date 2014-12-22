@@ -1,4 +1,4 @@
-var React = require('React'),
+var React = require('react'),
     mui = require('material-ui')
 
 module.exports = React.createClass({

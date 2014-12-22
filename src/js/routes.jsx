@@ -1,24 +1,15 @@
-
 var React = require('react'),
-	Router = require('react-router'),
-	Route = Router.Route,
-	DefaultRoute = Router.DefaultRoute,
-
-	//Pages
-	Layout = require('./pages/layout.jsx'),
-    Dashboard = require('./pages/dashboard.jsx'),
-    Machines = require('./pages/machines.jsx'),
-    Datasets = require('./pages/datasets.jsx'),
-    Logout = require('./pages/logout.jsx'),
-    Login = require('./pages/login.jsx')
-
+    Router = require('react-router'),
+    Route = Router.Route,
+    DefaultRoute = Router.DefaultRoute,
+    Pages = require('./pages')
 
 module.exports = (
-    <Route name='root' path='/' handler={Layout}>
-        <Route name='machines' handler={Machines}/>
-        <Route name='datasets' handler={Datasets}/>
-        <Route name='login' handler={Login}/>
-        <Route name='logout' handler={Logout}/>
-        <DefaultRoute handler={Dashboard} />
+    <Route name='root' path='/' handler={Pages.layout}>
+        <Route name='machines' handler={Pages.machines}/>
+        <Route name='datasets' handler={Pages.datasets}/>
+        <Route name='login' handler={Pages.login}/>
+        <Route name='logout' handler={Pages.logout}/>
+        <DefaultRoute handler={Pages.dashboard} />
     </Route>
 )

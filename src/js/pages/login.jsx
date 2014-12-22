@@ -16,18 +16,23 @@ module.exports = React.createClass({
 
     getInitialState: function() {
         return {
-            backend: null,
-            user: null,
-            pass: null,
+            endpointErr: null,
+            userErr: null,
 
             isPending: false,
-            errorMsg: false
+            errorMsg: false,
+            endpoint: Session.get('endpoint')
         }
     },
 
     componentDidMount: function() {
-        this.refs.user.focus()
-        this.refs.backend.setValue('https://nube.virtualizado.cl')
+
+        if (!this.state.endpoint)
+            this.refs.endpoint.focus()
+        else {
+            this.refs.endpoint.setValue(this.state.endpoint)
+            this.refs.user.focus()
+        }
 
         Session.subscribe(this.storeChanged)
     },
@@ -49,9 +54,9 @@ module.exports = React.createClass({
                         <h2>Welcome</h2>
                         <h4>{this.state.isPending? 'Please wait...': message}</h4>
                     </div>
-                    <mui.Input error={this.state.backend} ref='backend' name='backend' inputStyle='floating' placeholder='Backend' description='The FiFo backend hostname or IP' />
-                    <mui.Input error={this.state.user} ref='user' name='user' inputStyle='floating' placeholder='Username' />
-                    <mui.Input error={this.state.pass} ref='pass' name='password' inputStyle='floating' placeholder='Password' type='password' />
+                    <mui.Input error={this.state.endpointErr} ref='endpoint' name='endpoint' inputStyle='floating' placeholder='Endpoint' description='The FiFo backend hostname or IP' />
+                    <mui.Input error={this.state.userErr} ref='user' name='user' inputStyle='floating' placeholder='Username' />
+                    <mui.Input ref='pass' name='password' inputStyle='floating' placeholder='Password' type='password' />
                     <mui.RaisedButton label="Login" onClick={this.handleLogin} disabled={this.state.isPending} />
                 </div>
             </div>
@@ -60,13 +65,14 @@ module.exports = React.createClass({
 
     storeChanged: function(list) {
 
-        var res = Session.get('state')
+        var res = Session.get('current')
         if (res.isLogged)
             return this.transitionTo('root')
 
         this.setState({
             isPending: res.isPending,
-            errorMsg: res.error
+            errorMsg: res.error,
+            endpoint: Session.get('endpoint')
         })
     },
 
@@ -74,25 +80,23 @@ module.exports = React.createClass({
 
         //TODO: is there a fancier way to do this? what happend when pressing enter?
         var d = {
-            backend: this.refs.backend.getValue(),
+            endpoint: this.refs.endpoint.getValue(),
             user:    this.refs.user.getValue(),
             pass:    this.refs.pass.getValue()
         }
 
         var errors = {
-            backend: !d.backend? 'Must enter valid endpoint': null,
-            user:    !d.user?    'Enter a user name'               : null,
-            pass:    !d.pass?    'Enter your password'      : null
+            endpoint: !d.endpoint? 'Must enter valid endpoint': null,
+            user:    !d.user?      'Enter a user name'        : null,
+            pass:    !d.pass?      'Enter your password'      : null
         }
 
         this.setState(errors)
 
-        if (!d.backend || !d.user || !d.pass)
+        if (!d.endpoint || !d.user || !d.pass)
             return
 
-        Actions.session.login(d.backend, d.user, d.pass)
-
-        e && e.stopPropagation()
+        Actions.session.login(d.endpoint, d.user, d.pass)
 
     }
 })

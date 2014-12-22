@@ -6,7 +6,7 @@ var Router = require('react-router'),
 module.exports = {
     statics: {
         willTransitionTo: function(transition, params) {
-            var isLogged = Session.get('state').isLogged
+            var isLogged = Session.get('current').isLogged
             if (!isLogged)
                 transition.redirect('/login')
         }

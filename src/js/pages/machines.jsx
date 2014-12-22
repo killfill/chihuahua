@@ -114,7 +114,7 @@ module.exports = React.createClass({
             icons.push({icon: 'image-photo-camera', alt: 'Has snapshots'})
 
         if (vm.config.networks && vm.config.networks.length > 1)
-            icons.push({icon: 'social-public', alt: 'Has public IP'})
+            icons.push({icon: 'social-public', alt: 'Has multiple IPs'})
 
         //If the history of the VM was changed < 2 days, show it as 'active'
         var recent = 1 * 24 * 3600,

@@ -11,7 +11,7 @@ var SidebarHeader = React.createClass({
     getInitialState: function() {
 
         return {
-            username: Session.get('state').data.name
+            username: Session.get('current').data.name
         }
     },
 
@@ -25,7 +25,7 @@ var SidebarHeader = React.createClass({
 
     sessionChanged: function(){
         this.setState({
-            username: Session.get('state').data.name
+            username: Session.get('current').data.name
         })
     },
 
@@ -82,7 +82,7 @@ module.exports = React.createClass({
         return (
             <mui.LeftNav
                 className='sidebar-menu'
-                ref="leftnav"
+                ref='leftnav'
                 header={<SidebarHeader/>}
                 menuItems={this.state.menuItems}
                 selectedIndex={this.getSelectedMenu()}
