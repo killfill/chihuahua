@@ -1,21 +1,24 @@
 {
-  "name": "mui-test",
-  "version": "0.0.0",
+  "name": "chihuahua",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/killfill/chihuahua"
+  },
   "scripts": {
     "min:js": "NODE_ENV=production browserify src/js/*.jsx | uglifyjs -cm -o dist/all.js",
     "min:less": "lessc src/styles/style.less | cleancss -o dist/style.css",
     "min:html": "html-minifier src/index.html  --remove-comments --remove-comments-from-cdata --collapse-whitespace --remove-redundant-attributes --remove-empty-attributes -o dist/index.html",
     "premin": "rm -rf dist/* && mkdir -p dist",
     "min": "npm run min:js && npm run min:less && npm run min:html",
-    "open-browser": "opener http://localhost:3000",
     "http-server": "http-server -p 3000 dist",
     "watchify:js": "watchify src/js/*.jsx -o dist/all.js -d -v",
     "watchify:css": "onchange src/styles/**.less -- lessc src/styles/style.less dist/style.css",
     "watchify:html": "onchange src/index.html -- cp src/index.html dist/",
     "live-reload": "live-reload --port 3001 dist/",
-    "start": "npm run watchify:js & npm run watchify:css & npm run watchify:html & npm run live-reload & npm run open-browser && npm run http-server"
+    "start": "npm run watchify:js & npm run watchify:css & npm run watchify:html & npm run live-reload & npm run http-server"
   },
   "author": "@killfil",
   "license": "ISC",
@@ -34,7 +37,6 @@
     "md5": "^1.0.0",
     "nfifo": "^0.6.2",
     "onchange": "0.0.2",
-    "opener": "^1.4.0",
     "react": "^0.12.2",
     "react-router": "^0.11.6",
     "react-tap-event-plugin": "^0.1.3",
