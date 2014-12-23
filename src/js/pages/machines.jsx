@@ -86,7 +86,7 @@ module.exports = React.createClass({
             ip = ips[0]
 
         return {
-            image: dataset.os? 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png': false,
+            image: dataset.os? 'images/os/' + dataset.os + '.png': false,
             title: vmTitle,
             date: helpers.titelize(vm.state),
             icons: this.iconsOfVM(vm),

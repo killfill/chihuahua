@@ -65,7 +65,7 @@ module.exports = React.createClass({
             networks = 'Requires ' + dataset.networks.length + ' networks. '
 
         return {
-            image: 'https://nube.virtualizado.cl/images/logos/' + dataset.os + '.png',
+            image: 'images/os/' + dataset.os + '.png',
             title: titelize(dataset.name) + ' v' + dataset.version,
             date: titelize(dataset.status),
             icons: icons,

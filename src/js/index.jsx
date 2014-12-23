@@ -11,7 +11,7 @@ require("react-tap-event-plugin")();
 Start.fromSavedState()
 
 Router.run(routes, function(Handler) {
-    React.render(<Handler/>, document.getElementById('here'))
+    React.render(<Handler/>, document.body)
 })
 
 if (process.env.NODE_ENV !== 'production')

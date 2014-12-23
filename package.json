@@ -11,14 +11,15 @@
     "min:js": "NODE_ENV=production browserify src/js/*.jsx | uglifyjs -cm -o dist/all.js",
     "min:less": "lessc src/styles/style.less | cleancss -o dist/style.css",
     "min:html": "html-minifier src/index.html  --remove-comments --remove-comments-from-cdata --collapse-whitespace --remove-redundant-attributes --remove-empty-attributes -o dist/index.html",
-    "premin": "rm -rf dist/* && mkdir -p dist",
+    "premin": "rm -rf dist/* && mkdir -p dist && npm run copy-images",
+    "copy-images": "cp -r src/images dist/ && cp src/favicon.ico dist/",
     "min": "npm run min:js && npm run min:less && npm run min:html",
     "http-server": "http-server -p 3000 dist",
     "watchify:js": "watchify src/js/*.jsx -o dist/all.js -d -v",
     "watchify:css": "onchange src/styles/**.less -- lessc src/styles/style.less dist/style.css",
     "watchify:html": "onchange src/index.html -- cp src/index.html dist/",
     "live-reload": "live-reload --port 3001 dist/",
-    "start": "npm run watchify:js & npm run watchify:css & npm run watchify:html & npm run live-reload & npm run http-server"
+    "start": "npm run copy-images && npm run watchify:js & npm run watchify:css & npm run watchify:html & npm run live-reload & npm run http-server"
   },
   "author": "@killfil",
   "license": "ISC",
