@@ -3,9 +3,15 @@ var React = require('react'),
 
 module.exports = React.createClass({
 
+    propTypes: {
+        items: React.PropTypes.array,
+        onTouchTap: React.PropTypes.func
+    },
+
     getDefaultProps: function() {
         return {
-            items: []
+            items: [],
+            onTouchTap: function(){}
         }
     },
 
@@ -27,7 +33,7 @@ module.exports = React.createClass({
                 return <mui.Icon key={idx} icon={i.icon} alt={i.alt} title={i.alt} />
             })
 
-            return (<li className='mui-list-item' key={idx}>
+            return (<li className='mui-list-item' onTouchTap={this.props.onTouchTap.bind(null, item)} key={idx}>
                 {image}
                 <div className="content">
                     <div className='title' dangerouslySetInnerHTML={{__html: item.title}}></div>
@@ -36,7 +42,8 @@ module.exports = React.createClass({
                     <span className='bages'>{icons}</span>
                 </div>
             </li>)
-        })
+
+        }.bind(this))
 
         return <ul className='mui-list'>{content}</ul>
     }

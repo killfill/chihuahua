@@ -1,4 +1,6 @@
 var React = require('react'),
+    Router = require('react-router'),
+    RouteHandler = Router.RouteHandler,
     damals = require('damals'),
     helpers = require('../utils/helpers'),
     List = require('../components/list.jsx'),
@@ -12,7 +14,7 @@ var React = require('react'),
 
 module.exports = React.createClass({
 
-    mixins: [Autenticated],
+    mixins: [Autenticated, Router.Navigation],
 
     getInitialState: function() {
         return {list: Vms.getAll().map(this.forList)}
@@ -32,7 +34,14 @@ module.exports = React.createClass({
     },
 
     render: function() {
-        return <List items={this.state.list}/>
+        return (<div>
+            <List items={this.state.list} onTouchTap={this.itemClicked} />
+            <RouteHandler/>
+        </div>)
+    },
+
+    itemClicked: function(item) {
+        this.transitionTo('machine', {uuid: item.uuid})
     },
 
     forList: function(vm) {
@@ -86,6 +95,7 @@ module.exports = React.createClass({
             ip = ips[0]
 
         return {
+            uuid: vm.uuid,
             image: dataset.os? 'images/os/' + dataset.os + '.png': false,
             title: vmTitle,
             date: helpers.titelize(vm.state),
