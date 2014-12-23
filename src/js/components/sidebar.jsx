@@ -4,14 +4,16 @@ var React = require('react'),
     Gravatar = require('./gravatar.jsx'),
 
     Vms = require('../stores/vms'),
-    Session = require('../stores/session')
+    Session = require('../stores/session'),
+    Org = require('../stores/orgs')
 
 var SidebarHeader = React.createClass({
 
     getInitialState: function() {
 
         return {
-            username: Session.get('current').data.name
+            username: Session.get('current').data.name,
+            orgID: Session.get('current').data.org
         }
     },
 
@@ -25,26 +27,36 @@ var SidebarHeader = React.createClass({
 
     sessionChanged: function(){
         this.setState({
-            username: Session.get('current').data.name
+            username: Session.get('current').data.name,
+            orgID: Session.get('current').org
         })
     },
 
     render: function() {
 
         var username = this.state.username,
+            org = this.state.orgID? Org.get(this.state.orgID): false,
             size = 32
 
-        var userIcon = <mui.Icon icon='social-person' style={{padding: '4px'}} />
-        if (username.indexOf('@') >- 1)
-            userIcon = (
-                <mui.Paper zDepth={1} circle={true} style={{overflow: 'hidden', height: size, height: size}}>
+        var userIcon = username.indexOf('@') >- 1
+            ? (<mui.Paper zDepth={1} circle={true} style={{overflow: 'hidden', height: size, height: size}}>
                     <Gravatar email={username} size={size} />
-                </mui.Paper>
-            )
+                </mui.Paper>)
+            : <mui.Icon icon='social-person' style={{padding: '4px'}} />
+
+        var detail = org
+            ? (<span>
+                    <mui.Icon icon='action-account-balance'/>
+                    <span className='org'>{org.name}</span>
+                </span>)
+            : <span></span>
 
         return (<div className='sidebar-header'>
             <div className='icon' style={{width: size}}>{userIcon}</div>
-            <div className='username'>{username}</div>
+            <div className='description'>
+                <div className='username'>{username}</div>
+                {detail}
+            </div>
         </div>)
     }
 })
