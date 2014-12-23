@@ -13,41 +13,47 @@ var SidebarHeader = React.createClass({
 
         return {
             username: Session.get('current').data.name,
-            orgID: Session.get('current').data.org
+            org: false
         }
     },
 
     componentDidMount: function() {
         Session.subscribe(this.sessionChanged)
+        Org.subscribe(this.orgChanged)
     },
 
     componentWillUnmount: function() {
         Session.unsubscribe(this.sessionChanged)
+        Org.unsubscribe(this.orgChanged)
+    },
+
+    orgChanged: function() {
+        this.setState({
+            org: Org.get(Session.get('current').data.org)
+        })
     },
 
     sessionChanged: function(){
         this.setState({
             username: Session.get('current').data.name,
-            orgID: Session.get('current').org
         })
     },
 
     render: function() {
 
         var username = this.state.username,
-            org = this.state.orgID? Org.get(this.state.orgID): false,
             size = 32
 
         var userIcon = username.indexOf('@') >- 1
             ? (<mui.Paper zDepth={1} circle={true} style={{overflow: 'hidden', height: size, height: size}}>
                     <Gravatar email={username} size={size} />
                 </mui.Paper>)
-            : <mui.Icon icon='social-person' style={{padding: '4px'}} />
+            : <mui.Icon icon='action-accessibility' style={{padding: '4px'}} />
 
-        var detail = org
+        var detail = this.state.org
             ? (<span>
                     <mui.Icon icon='action-account-balance'/>
-                    <span className='org'>{org.name}</span>
+                    <span className='org'>{this.state.org.name}</span>
                 </span>)
             : <span></span>
 
