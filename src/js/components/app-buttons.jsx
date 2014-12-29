@@ -16,10 +16,11 @@ var menuItems = {
     ],
 
     machine: [
+        { payload: '2', text: 'Reboot'},
         { payload: '2', text: 'Delete'},
-        { payload: '2', text: 'Delete'},
-        { payload: '2', text: 'Delete'},
-        { payload: '2', text: 'Delete'},
+        { payload: '2', text: 'Lock'},
+        { payload: '2', text: 'Take snapshot'},
+        { payload: '2', text: 'Take backup'},
     ]
 }
 

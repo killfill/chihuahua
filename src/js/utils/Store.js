@@ -13,6 +13,26 @@ var Store = function (opts) {
     this.resource = opts.resource || 'resource options is missing'
     this.defaultHeaders = opts.defaultHeaders || {'x-full-list': true}
 
+    this.request = function(uuid, opts) {
+        opts = opts || {}
+
+        //Cache!
+        if (!opts.force && this.get(uuid))
+            return this.emit()
+
+        var h = this.defaultHeaders
+
+        fifo.send(this.resource).get({args: uuid, headers: h}, function(err, res, body) {
+
+            if (err || res.statusCode !== 200 || !body)
+                return
+
+            this.set(uuid, body)
+            this.emit()
+
+        }.bind(this))
+    }
+
     this.requestAll = function(headers) {
 
         var h = merge(headers || {}, this.defaultHeaders)
@@ -43,7 +63,7 @@ var Store = function (opts) {
     },
 
     this.get = function(id) {
-        return this.data[id] || this.data[id.id]
+        return this.data[id]
     },
 
     this.update = function(id, newParams) {
