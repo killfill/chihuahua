@@ -6,12 +6,11 @@ var React = require('react'),
 
 module.exports = (
     <Route name='root' path='/' handler={Pages.layout}>
-        <Route name='machines' handler={Pages.machines}>
-            <Route name='machine' path=':uuid' handler={Pages.machine} />
-        </Route>
+        <Route name='machines' handler={Pages.machines} />
         <Route name='datasets' handler={Pages.datasets}/>
         <Route name='login' handler={Pages.login}/>
         <Route name='logout' handler={Pages.logout}/>
-        <DefaultRoute handler={Pages.dashboard} />
+        <Route name='machine' path='machines/:uuid' handler={Pages.machine} />
+        <DefaultRoute name='dashboard' handler={Pages.dashboard} />
     </Route>
 )

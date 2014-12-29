@@ -20,14 +20,12 @@ Datasets.dispatchToken = D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'DATASETS_LIST_RES':
-            Datasets.setDataArray(action.list, 'uuid')
-            Datasets.emit()
+        case 'SESSION_LOGIN_RES':
+            Datasets.requestAll()
             break;
 
-        case 'SESSION_LOGIN_RES':
-            Datasets.requestList()
-            Datasets.emit()
+        case 'SESSION_LOGOUT':
+            Datasets.clear()
             break;
 
     }

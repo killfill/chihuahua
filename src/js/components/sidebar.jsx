@@ -48,7 +48,7 @@ var SidebarHeader = React.createClass({
             ? (<mui.Paper zDepth={1} circle={true} style={{overflow: 'hidden', height: size, height: size}}>
                     <Gravatar email={username} size={size} />
                 </mui.Paper>)
-            : <mui.Icon icon='action-accessibility' style={{padding: '4px'}} />
+            : <mui.Icon className='user-icon' icon='action-accessibility' />
 
         var detail = this.state.org
             ? (<span>

@@ -4,7 +4,7 @@ var React = require('react'),
 module.exports = React.createClass({
 
     propTypes: {
-        items: React.PropTypes.array,
+        items: React.PropTypes.array.isRequired,
         onTouchTap: React.PropTypes.func
     },
 

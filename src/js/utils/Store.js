@@ -13,13 +13,19 @@ var Store = function (opts) {
     this.resource = opts.resource || 'resource options is missing'
     this.defaultHeaders = opts.defaultHeaders || {'x-full-list': true}
 
-    this.requestList = function(headers) {
+    this.requestAll = function(headers) {
 
         var h = merge(headers || {}, this.defaultHeaders)
 
         fifo.send(this.resource).get({headers: h}, function(err, res, body) {
 
-            this.setDataArray(body, 'uuid')
+            if (err || res.statusCode !== 200 || !body)
+                return
+
+            if (Array.isArray(body))
+                this.setDataArray(body, 'uuid')
+            else
+                this.setData(body)
             this.emit()
 
         }.bind(this))
@@ -55,9 +61,13 @@ var Store = function (opts) {
         return Object.keys(data).map(function(k) {return data[k]}).sort(this.sortBy)
     }
 
+    this.clear = function() {
+        this.data = {}
+    }
+
     this.setData = function(data) {
         if (typeof data !== 'object' || Array.isArray(data))
-            throw new Error('Data must by a hash!')
+            throw new Error('Data must by a hash, and is of type ' + typeof data + '! --> ' + this.resource)
 
         this.data = data
         // this.emit()
@@ -65,7 +75,7 @@ var Store = function (opts) {
 
     this.setDataArray = function(data, id) {
         if (typeof data !== 'object' || !Array.isArray(data))
-            throw new Error('Data must by an array!')
+            throw new Error('Data must by an array, and is of type ' + typeof data + '! --> ' + this.resource)
 
         id = id || 'id'
 

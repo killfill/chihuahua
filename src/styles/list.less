@@ -7,19 +7,20 @@
         height: 72px;
     }
     .icon {
+        z-index: 1;
         position: absolute;
         width: 30px;
         height: 30px;
 
-        margin-left: 23px;
-        margin-top: 20px;
+        margin-left: 20px;
+        margin-top: 16px;
     }
     .icon img {
         width: 31px;
     }
     .content {
         padding: 16px;
-        padding-left: 72px;
+        padding-left: 68px;
         position: relative;
     }
     .content .date {
@@ -52,5 +53,9 @@
     .content .title {
         font-weight: 500;
         font-size: 1.2em;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 85%;
     }
 }

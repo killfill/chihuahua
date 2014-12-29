@@ -10,7 +10,7 @@ require("react-tap-event-plugin")();
 
 Start.fromSavedState()
 
-Router.run(routes, function(Handler) {
+Router.run(routes, function(Handler, state) {
     React.render(<Handler/>, document.body)
 })
 

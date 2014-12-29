@@ -128,9 +128,10 @@ module.exports = React.createClass({
 
         //If the history of the VM was changed < 2 days, show it as 'active'
         var recent = 1 * 24 * 3600,
-            lastLog = vm.log[vm.log.length-1]
+            lastLog = vm.log[vm.log.length-1],
+            seconds = lastLog && (Date.now() - lastLog.date/1000)/1000
 
-        if (lastLog && Date.now() - lastLog.date/1000 < recent * 1000)
+        if (seconds && seconds < recent)
             icons.push({icon: 'action-history', alt: 'Has recent history activity'})
 
         if (vm.metadata.jingles && vm.metadata.jingles.locked)

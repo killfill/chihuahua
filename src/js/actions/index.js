@@ -1,3 +1,4 @@
 module.exports = {
-	session: require('./session')
+	session: require('./session'),
+	appBar: require('./app-bar')
 }

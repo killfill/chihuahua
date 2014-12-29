@@ -22,10 +22,7 @@ module.exports = React.createClass({
             ? this.buildBody(vm)
             : 'Unknown VM'
 
-        return (
-            <Dialog title={title} openImmediately={true} onDismiss={this.goBack}>
-                {body}
-            </Dialog>)
+        return body
     },
 
     buildTitle: function(vm) {

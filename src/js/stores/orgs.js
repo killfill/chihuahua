@@ -9,14 +9,12 @@ Orgs.dispatchToken = D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'ORGS_LIST_RES':
-            Orgs.setDataArray(action.list, 'uuid')
-            Orgs.emit()
+        case 'SESSION_LOGIN_RES':
+            Orgs.requestAll()
             break;
 
-        case 'SESSION_LOGIN_RES':
-            Orgs.requestList()
-            Orgs.emit()
+        case 'SESSION_LOGOUT':
+            Orgs.clear()
             break;
     }
 

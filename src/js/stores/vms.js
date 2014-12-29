@@ -4,7 +4,13 @@ var Store = require('../utils/Store.js'),
     Actions = require('../actions'),
     Session = require('./session')
 
-var Vms = module.exports = new Store({resource: 'vms'})
+var Vms = module.exports = new Store({
+    resource: 'vms',
+    defaultHeaders: {
+        'x-full-list': true,
+        'x-full-list-fields': 'uuid,dataset,package,config,owner,metadata,state,grouping,log,backups,snapshots'
+    }
+})
 
 //Order by last log (history)
 Vms.sortBy = function(a, b) {
@@ -21,14 +27,12 @@ Vms.dispatchToken = D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'VMS_LIST_RES':
-            Vms.setDataArray(action.list, 'uuid')
-            Vms.emit()
+        case 'SESSION_LOGIN_RES':
+            Vms.requestAll()
             break;
 
-        case 'SESSION_LOGIN_RES':
-            Vms.requestList()
-            Vms.emit()
+        case 'SESSION_LOGOUT':
+            Vms.clear()
             break;
     }
 

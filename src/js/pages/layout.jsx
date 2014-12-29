@@ -4,34 +4,38 @@ var React = require('react'),
     RouteHandler = require('react-router').RouteHandler,
 
     Sidebar = require('../components/sidebar.jsx'),
-    List = require('../components/list.jsx'),
+    AppButtons = require('../components/app-buttons.jsx'),
+
     titelize = require('../utils/helpers').titelize,
-    Session = require('../stores/session')
+    Session = require('../stores/session'),
+
+    AppBar = require('../utils/patches/AppBar_patched.jsx')
 
 module.exports = React.createClass({
 
-    mixins: [Router.State],
+    mixins: [Router.State, Router.Navigation],
 
     render: function() {
-
-        rightMenuItems = [
-          { payload: '1', text: 'Hello' },
-          { payload: '2', text: 'There' }
-        ];
-
-        var title = titelize(this.getPath().slice(1))
-        if (!title) title = 'Dashboard'
 
         if (!Session.get('token'))
             return <RouteHandler/>
 
+        var routePath = this.getRoutes()[this.getRoutes().length-1].path,
+            isDetailPage = routePath.indexOf(':uuid') > -1
+
+        var title = ''
+        if (!isDetailPage) {
+            title = titelize(this.getPath().slice(1))
+            if (!title) title = 'Dashboard'
+        }
+
         return (
             <mui.AppCanvas predefinedLayout={1}>
-
-                <mui.AppBar title={title} onMenuIconButtonTouchTap={this.menuToggle}>
-                    <mui.DropDownIcon icon='navigation-more-vert' menuItems={rightMenuItems} />
-                    <mui.IconButton icon='action-search' tooltip='Search' />
-                </mui.AppBar>
+                <AppBar title={title}
+                    onMenuIconButtonTouchTap={this.menuToggle.bind(null, isDetailPage)}
+                    icon={isDetailPage? 'navigation-arrow-back': 'navigation-menu'}>
+                    <AppButtons/>
+                </AppBar>
 
                 <Sidebar ref='sidebar' />
                 <mui.FloatingActionButton className='create-vm-button' icon='content-add' mini={true} />
@@ -39,14 +43,14 @@ module.exports = React.createClass({
                 <div className='mui-app-content-canvas'>
                     <RouteHandler/>
                 </div>
-
-
             </mui.AppCanvas>
         )
 
     },
-
-    menuToggle: function() {
-        this.refs.sidebar.toggle()
+    menuToggle: function(isDetailPage) {
+        if (isDetailPage)
+           this.transitionTo('machines')
+        else
+            this.refs.sidebar.toggle()
     }
 })

@@ -56,6 +56,14 @@ Session.dispatchToken = D.register(function(payload) {
             fifo.token = null
             break;
 
+
+        case 'APP_BAR':
+            if (action.actionName === 'about') {
+                Session.set('about', !Session.get('about'))
+                Session.emit()
+            }
+            break;
+
         default:
             return false
 
