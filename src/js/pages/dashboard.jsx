@@ -19,6 +19,12 @@ module.exports = React.createClass({
         Orgs.subscribe(this.storeChanged)
         Roles.subscribe(this.storeChanged)
         Cloud.subscribe(this.storeChanged)
+
+        //Request for cloud status frequently...
+        Cloud.requestAll()
+        this.cloudInterval = setInterval(function() {
+            Cloud.requestAll()
+        }, 10*1000)
     },
     componentWillUnmount: function() {
         Vms.unsubscribe(this.storeChanged)
@@ -26,6 +32,8 @@ module.exports = React.createClass({
         Orgs.unsubscribe(this.storeChanged)
         Roles.unsubscribe(this.storeChanged)
         Cloud.unsubscribe(this.storeChanged)
+
+        clearInterval(this.cloudInterval)
     },
     storeChanged: function() {
         this.forceUpdate()

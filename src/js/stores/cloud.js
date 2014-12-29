@@ -9,10 +9,6 @@ Cloud.dispatchToken = D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'SESSION_LOGIN_RES':
-            Cloud.requestAll()
-            break;
-
         case 'SESSION_LOGOUT':
             Cloud.clear()
             break;
