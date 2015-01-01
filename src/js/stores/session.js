@@ -29,9 +29,9 @@ Session.dispatchToken = D.register(function(payload) {
             Session.emit()
             break;
 
-        case 'SESSION_LOGIN_RES':
+        case 'SESSION_LOGIN_OK':
+        case 'SESSION_LOGIN_ERR':
 
-            Session.set('token', action.token)
             var state = Session.set('current', {
                 isPending: false,
                 isLogged: action.success,
@@ -41,6 +41,7 @@ Session.dispatchToken = D.register(function(payload) {
 
             //Remember the token and user session.
             if (state.isLogged) {
+                Session.set('token', action.token)
                 localStorage.userSession = JSON.stringify(state)
                 localStorage.token = action.token                
             }

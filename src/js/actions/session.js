@@ -14,28 +14,36 @@ module.exports = {
 
         fifo.login(login, password, function(err, res, body) {
 
-            this.loginResult({
-                success: res? res.statusCode === 200: false,
-                error: err? err.message: null,
-                token: body && body.session,
-                data: body || {},
-                endpoint: endpoint
-            })
+            if (err || res.statusCode !== 200)
+                this.loginFailed({error: err? err.message: body})
+
+            else
+                this.loginSuccess({
+                    token: body.session,
+                    data: body
+                })
 
         }.bind(this))
     },
 
-    loginResult: function(params) {
+    loginSuccess: function(params) {
 
-        if (params.token)
-            fifo.token = params.token
+        fifo.token = params.token
 
         D.handleServerAction({
-            actionType: 'SESSION_LOGIN_RES',
-            success: params.success,
-            error: params.error,
+            actionType: 'SESSION_LOGIN_OK',
+            success: true,
             data: params.data,
             token: params.token
+        })
+    },
+
+    loginFailed: function(params) {
+
+        D.handleServerAction({
+            actionType: 'SESSION_LOGIN_ERR',
+            success: false,
+            error: params.error
         })
     },
 

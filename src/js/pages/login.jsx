@@ -35,6 +35,9 @@ module.exports = React.createClass({
         }
 
         Session.subscribe(this.storeChanged)
+
+        //Call this here, so when user goes to /login as we have a token, redirect to /..
+        this.storeChanged()
     },
 
     componentWillUnmount: function() {
@@ -56,14 +59,14 @@ module.exports = React.createClass({
                     </div>
                     <mui.Input error={this.state.endpointErr} ref='endpoint' name='endpoint' inputStyle='floating' placeholder='Endpoint' description='The FiFo backend hostname or IP' />
                     <mui.Input error={this.state.userErr} ref='user' name='user' inputStyle='floating' placeholder='Username' />
-                    <mui.Input ref='pass' name='password' inputStyle='floating' placeholder='Password' type='password' />
+                    <mui.Input error={this.state.passErr} ref='pass' name='password' inputStyle='floating' placeholder='Password' type='password' />
                     <mui.RaisedButton label="Login" onClick={this.handleLogin} disabled={this.state.isPending} />
                 </div>
             </div>
         )
     },
 
-    storeChanged: function(list) {
+    storeChanged: function() {
 
         var res = Session.get('current')
         if (res.isLogged)
@@ -76,19 +79,18 @@ module.exports = React.createClass({
         })
     },
 
-    handleLogin: function(e) {
+    handleLogin: function() {
 
-        //TODO: is there a fancier way to do this? what happend when pressing enter?
         var d = {
             endpoint: this.refs.endpoint.getValue(),
-            user:    this.refs.user.getValue(),
-            pass:    this.refs.pass.getValue()
+            user:     this.refs.user.getValue(),
+            pass:     this.refs.pass.getValue()
         }
 
         var errors = {
-            endpoint: !d.endpoint? 'Must enter valid endpoint': null,
-            user:    !d.user?      'Enter a user name'        : null,
-            pass:    !d.pass?      'Enter your password'      : null
+            endpointErr: !d.endpoint? 'Must enter valid endpoint': null,
+            userErr:    !d.user?      'Enter a user name'        : null,
+            passErr:    !d.pass?      'Enter your password'      : null
         }
 
         this.setState(errors)

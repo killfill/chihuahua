@@ -9,7 +9,7 @@ Roles.dispatchToken = D.register(function(payload) {
 
     switch (action.actionType) {
 
-        case 'SESSION_LOGIN_RES':
+        case 'SESSION_LOGIN_OK':
             Roles.requestAll()
             break;
 
