@@ -42,7 +42,6 @@ Session.dispatchToken = D.register(function(payload) {
             //Remember the token and user session.
             if (state.isLogged) {
                 Session.set('token', action.token)
-                localStorage.userSession = JSON.stringify(state)
                 localStorage.token = action.token                
             }
 
@@ -51,15 +50,16 @@ Session.dispatchToken = D.register(function(payload) {
 
         case 'SESSION_LOGOUT':
             Session.set('current', defaultSession)
+            Session.get('current').error = action.msg || false
             Session.remove('token')
-            localStorage.removeItem('userSession')
             localStorage.removeItem('token')
             fifo.token = null
+            Session.emit()
             break;
 
 
         case 'APP_BAR':
-            if (action.actionName === 'about') {
+            if (action.context === 'dashboard' && action.actionName === 'about') {
                 Session.set('about', !Session.get('about'))
                 Session.emit()
             }

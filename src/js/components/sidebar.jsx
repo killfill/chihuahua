@@ -18,24 +18,16 @@ var SidebarHeader = React.createClass({
     },
 
     componentDidMount: function() {
-        Session.subscribe(this.sessionChanged)
         Org.subscribe(this.orgChanged)
     },
 
     componentWillUnmount: function() {
-        Session.unsubscribe(this.sessionChanged)
         Org.unsubscribe(this.orgChanged)
     },
 
     orgChanged: function() {
         this.setState({
             org: Org.get(Session.get('current').data.org)
-        })
-    },
-
-    sessionChanged: function(){
-        this.setState({
-            username: Session.get('current').data.name,
         })
     },
 

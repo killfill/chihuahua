@@ -36,7 +36,7 @@
     "live-reload": "^0.2.0",
     "material-ui": "^0.4.1",
     "md5": "^1.0.0",
-    "nfifo": "^0.6.2",
+    "nfifo": "^0.7.2",
     "onchange": "0.0.2",
     "react": "^0.12.2",
     "react-router": "^0.11.6",
@@ -49,7 +49,12 @@
     "comment": "react's package.json defines the envify transform and browserify gets that. But lets make it explicit.",
     "transform": [
       "envify",
-      ["reactify",{"es6": true}]
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
     ]
   }
 }

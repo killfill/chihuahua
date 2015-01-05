@@ -2,15 +2,17 @@ var D = require('../dispatcher')
 
 module.exports = {
     
-    trigger: function(actionName, param) {
+    trigger: function(context, actionName) {
 
-    	return function() {
-	        D.handleViewAction({
-	            actionType: 'APP_BAR',
-	            actionName: actionName,
-	            param: param
-	        })
-	
-    	}
+        return function(e, selectedIdx, item) {
+            console.log('Look', context, actionName, item)
+            D.handleViewAction({
+                actionType: 'APP_BAR',
+                context: context,
+                actionName: actionName,
+                params: item
+            })
+
+        }
     }
 }

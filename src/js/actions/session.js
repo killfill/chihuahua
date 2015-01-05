@@ -47,9 +47,11 @@ module.exports = {
         })
     },
 
-    logout: function() {
+    logout: function(msg) {
+        fifo.send('sessions').delete(Session.get('token'), function() {})
         D.handleViewAction({
-            actionType: 'SESSION_LOGOUT'
+            actionType: 'SESSION_LOGOUT',
+            msg: msg
         })
     }
 

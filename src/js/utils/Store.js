@@ -1,4 +1,3 @@
-
 function merge(a,b) {
     for (k in b) {
         a[k] = b[k]
@@ -25,7 +24,7 @@ var Store = function (opts) {
         fifo.send(this.resource).get({args: uuid, headers: h}, function(err, res, body) {
 
             if (err || res.statusCode !== 200 || !body)
-                return
+                return console.error('Could not query:' + (err && err.message || res.statusCode))
 
             this.set(uuid, body)
             this.emit()
@@ -40,7 +39,7 @@ var Store = function (opts) {
         fifo.send(this.resource).get({headers: h}, function(err, res, body) {
 
             if (err || res.statusCode !== 200 || !body)
-                return
+                return console.error('Could not query:' + (err && err.message || res.statusCode))
 
             if (Array.isArray(body))
                 this.setDataArray(body, 'uuid')

@@ -1,7 +1,7 @@
 var React = require('react'),
     Router = require('react-router'),
     mui = require('material-ui'),
-    Actions = require('../actions')
+    triggerAction = require('../actions').appBar.trigger,
 
     DropDownIcon = mui.DropDownIcon,
     IconButton = mui.IconButton
@@ -28,18 +28,18 @@ var menuItems = {
 var routeButtonsItems = {
 
     dashboard: [
-        <IconButton key={0} icon='file-cloud' onTouchTap={Actions.appBar.trigger('about')} />
+        <IconButton key={0} icon='file-cloud' onTouchTap={triggerAction('dashboard', 'about')} />
     ],
 
     machines: [
-        <DropDownIcon key={1} icon='navigation-more-vert' menuItems={menuItems['machines']} onChange={this.dropDownTap} />,
-        <IconButton key={2} icon='action-search' tooltip='Search' />
+        <DropDownIcon key={1} icon='navigation-more-vert' menuItems={menuItems['machines']} onChange={triggerAction('machines', 'menu')} />,
+        <IconButton key={2} icon='action-search' onTouchTap={triggerAction('machines', 'search')} />
     ],
 
     machine: [
-        <DropDownIcon key={1} icon='navigation-more-vert' menuItems={menuItems['machine']} onChange={this.dropDownTap} />,
-        <IconButton key={3} icon='av-play-arrow' tooltip='Start' />,
-        <IconButton key={4} icon='av-stop' tooltip='Stop' />,
+        <DropDownIcon key={10} icon='navigation-more-vert' menuItems={menuItems['machine']} onChange={triggerAction('machine', 'menu')} />,
+        <IconButton key={3} icon='av-play-arrow' onTouchTap={triggerAction('machine', 'start')} />,
+        <IconButton key={4} icon='av-stop' onTouchTap={triggerAction('machine', 'stop')} />,
     ],
 
     datasets: []
