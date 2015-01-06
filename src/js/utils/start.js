@@ -1,7 +1,7 @@
 var React = require('react'),
     Router = require('react-router'),
     Session = require('../stores/session'),
-    SessionAction = require('../actions/session'),
+    Actions = require('../actions'),
 
     routes = require('../routes.jsx'),
     helpers = require('./helpers')
@@ -16,6 +16,17 @@ module.exports = {
 
         this.tryReuseToken(function() {
             Router.run(routes, function(Handler, state) {
+
+                //trigger actions based on the route.
+                var route = state.routes[state.routes.length-1]
+
+                switch (route.name) {
+
+                    case 'machine':
+                        Actions.vms.selected(state.params.uuid)
+                        break;
+                }
+
                 React.render(<Handler/>, document.body)
             })
         })
@@ -41,11 +52,11 @@ module.exports = {
 
             if (err || res.statusCode !== 200) {
                 document.location.hash = '#/login'
-                SessionAction.logout('Invalid token')
+                Actions.session.logout('Invalid token')
                 return cb()
             }
 
-            SessionAction.loginSuccess({
+            Actions.session.loginSuccess({
                 success: true,
                 token: token,
                 data: body

@@ -1,8 +1,7 @@
 
 var Store = require('../utils/Store.js'),
     D = require('../dispatcher'),
-    Actions = require('../actions'),
-    Session = require('./session')
+    Actions = require('../actions')
 
 var Vms = module.exports = new Store({
     resource: 'vms',

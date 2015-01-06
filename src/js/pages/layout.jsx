@@ -9,7 +9,9 @@ var React = require('react'),
     titelize = require('../utils/helpers').titelize,
     Session = require('../stores/session'),
 
-    AppBar = require('../utils/patches/AppBar_patched.jsx')
+    AppBar = require('../utils/patches/AppBar_patched.jsx'),
+    triggerAction = require('../actions').appBar.trigger
+
 
 module.exports = React.createClass({
 
@@ -38,8 +40,7 @@ module.exports = React.createClass({
                 </AppBar>
 
                 <Sidebar ref='sidebar' />
-                <mui.FloatingActionButton className='create-vm-button' icon='content-add' mini={true} />
-
+                <mui.FloatingActionButton className='create-vm-button' icon='content-add' mini={true} onTouchTap={triggerAction('machine', 'create')} />
                 <div className='mui-app-content-canvas'>
                     <RouteHandler/>
                 </div>

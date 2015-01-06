@@ -1,11 +1,9 @@
 var React = require('react'),
     damals = require('damals'),
     Router = require('react-router'),
-    Dialog = require('material-ui').Dialog,
-    Vms = require('../stores/vms'),
+    Vm = require('../stores/vm'),
     Packages = require('../stores/packages'),
     Datasets = require('../stores/datasets'),
-    Users = require('../stores/users'),
     Orgs = require('../stores/orgs'),
     titelize = require('../utils/helpers').titelize
 
@@ -14,61 +12,24 @@ module.exports = React.createClass({
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        var uuid = this.getParams().uuid,
-            vm = Vms.get(uuid)
-
-        return {
-            uuid: uuid,
-            vm: vm
-        }
-    },
-
-    //Request additional data
-    requestAdditionals: function() {
-        if (this.state.vm && this.state.vm.config.owner)
-            Users.request(this.state.vm.config.owner)
+        return {vm: Vm.get('vm')}
     },
 
     componentDidMount: function() {
-        Vms.subscribe(this.vmsStoreChanged)
-        Users.subscribe(this.usersStoreChanged)
-        this.requestAdditionals()
+        Vm.subscribe(this.storeChanged)
     },
 
     componentWillUnmount: function() {
-        Vms.unsubscribe(this.vmsStoreChanged)
-        Users.unsubscribe(this.usersStoreChanged)
+        Vm.unsubscribe(this.storeChanged)
     },
 
-    vmsStoreChanged: function() {
-        this.setState({vm: Vms.get(this.state.uuid)})
-        this.requestAdditionals()
-    },
-
-    usersStoreChanged: function() {
-        this.setState({owner: Users.get(this.state.vm.config.owner)})
+    storeChanged: function() {
+        this.setState({vm: Vm.get('vm')})
     },
 
     render: function() {
-
         var vm = this.state.vm
-
-        if (!vm)
-            return null
-
-        var title = vm
-            ? this.buildTitle(vm)
-            : uuid
-
-        var body = vm
-            ? this.buildBody(vm)
-            : <span>Unknown VM</span>
-
-        return body
-    },
-
-    buildTitle: function(vm) {
-        return <span><b>{titelize(vm.config.alias)}</b> is {vm.state}</span>
+        return vm? this.buildBody(vm): null
     },
 
     buildBody: function(vm) {
@@ -84,8 +45,9 @@ module.exports = React.createClass({
             </p>)
         })
 
-        var ownerView = this.state.owner
-                ? <span>Owned by {this.state.owner.name}@{Orgs.get(this.state.vm.owner).name}</span>
+        var user = Vm.get('user')
+        var ownerView = user
+                ? <span>Owned by {user.name}@{Orgs.get(vm.owner).name}</span>
                 : <span></span>
 
         var logs = this.state.vm.log && this.state.vm.log.map(function(log, idx) {
@@ -98,6 +60,7 @@ module.exports = React.createClass({
 
         return (<div>
             <h3>{vm.config.alias}</h3>
+            <h4>{vm.state}</h4>
             <p>{vm.config.hostname}</p>
             <p>Desc: {vm.metadata.jingles.description}</p>
             {ownerView}

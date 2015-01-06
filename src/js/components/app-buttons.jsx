@@ -1,5 +1,6 @@
 var React = require('react'),
     Router = require('react-router'),
+    Vm = require('../stores/vm'),
     mui = require('material-ui'),
     triggerAction = require('../actions').appBar.trigger,
 
@@ -16,35 +17,60 @@ var menuItems = {
     ],
 
     machine: [
-        { payload: '2', text: 'Reboot'},
-        { payload: '2', text: 'Delete'},
-        { payload: '2', text: 'Lock'},
-        { payload: '2', text: 'Take snapshot'},
-        { payload: '2', text: 'Take backup'},
+        { payload: 'reboot', text: 'Reboot', disabled: true},
+        { payload: 'delete', text: 'Delete'},
+        { payload: 'lock', text: 'Lock'},
+        { payload: 'snapshot', text: 'Take snapshot'},
+        { payload: 'backup', text: 'Take backup'},
     ]
 }
 
-
-var routeButtonsItems = {
-
+var buttons = {
     dashboard: [
         <IconButton key={0} icon='file-cloud' onTouchTap={triggerAction('dashboard', 'about')} />
     ],
-
     machines: [
         <DropDownIcon key={1} icon='navigation-more-vert' menuItems={menuItems['machines']} onChange={triggerAction('machines', 'menu')} />,
         <IconButton key={2} icon='action-search' onTouchTap={triggerAction('machines', 'search')} />
     ],
-
-    machine: [
-        <DropDownIcon key={10} icon='navigation-more-vert' menuItems={menuItems['machine']} onChange={triggerAction('machine', 'menu')} />,
-        <IconButton key={3} icon='av-play-arrow' onTouchTap={triggerAction('machine', 'start')} />,
-        <IconButton key={4} icon='av-stop' onTouchTap={triggerAction('machine', 'stop')} />,
-    ],
-
     datasets: []
 }
 
+
+var MachineButtons = React.createClass({
+    getInitialState: function() {
+        return {vm: Vm.get('vm')}
+    },
+    componentDidMount: function() {
+        Vm.subscribe(this.storeChanged)
+    },
+    componentWillUnmount: function() {
+        Vm.unsubscribe(this.storeChanged)
+    },
+    storeChanged: function() {
+        this.setState({vm: Vm.get('vm')})
+    },
+    render: function() {
+
+        var play = true,
+            stop = true,
+            uuid
+
+        var vm = this.state.vm
+        if (vm) {
+            play = vm.state !== 'running'
+            stop = !play
+            uuid = vm.uuid
+        }
+
+        var isRunning = false
+        return (<span>
+            <DropDownIcon key={10} icon='navigation-more-vert' menuItems={menuItems['machine']} onChange={triggerAction('machine', 'menu', uuid)} />
+            <IconButton key={3} icon='av-play-arrow' disabled={!play} onTouchTap={triggerAction('machine', 'start', uuid)} />
+            <IconButton key={4} icon='av-stop' disabled={!stop} onTouchTap={triggerAction('machine', 'stop', uuid)} />
+        </span>)
+    }
+})
 
 module.exports = React.createClass({
 
@@ -52,10 +78,12 @@ module.exports = React.createClass({
 
     render: function() {
 
-        var routeName = this.getRoutes()[this.getRoutes().length-1].name,
-            items = routeButtonsItems[routeName]
+        var routeName = this.getRoutes()[this.getRoutes().length-1].name
 
-        return  (<span>{items}</span>)
+        if (routeName === 'machine')
+            return <MachineButtons/>
+
+        return  (<span>{buttons[routeName]}</span>)
     }
 
 })
