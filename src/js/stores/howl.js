@@ -1,7 +1,8 @@
 
 var Store = require('../utils/Store.js'),
     D = require('../dispatcher'),
-    Vms = require('./vms')
+    Vms = require('./vms'),
+    Vm = require('./vm'),
     HowlHelper = require('../utils/howl-helper')
 
 var Howl = module.exports = new Store({resource: 'asdasd'})
@@ -25,6 +26,45 @@ Howl.dispatchToken = D.register(function(payload) {
 
     return false
 })
+
+function emitVm() {
+    Vms.emit()
+
+    //If there is a currently selected VM, emit that store too.
+    if (Vm.get('vm'))
+        Vm.emit()
+}
+
+//Handle message from howl
+function handleMessage(obj) {
+
+    var chan = obj.channel,
+        msg = obj.message,
+        vm = Vms.get(chan)
+
+    if (!chan || !vm) return
+
+    switch (msg.event) {
+        case 'log':
+            vm.log.push(msg.data)
+            emitVm()
+            break;
+
+        case 'state':
+            vm.state = msg.data
+            emitVm()
+            break;
+
+        case 'services':
+            vm.services = msg.data
+            emitVm()
+            break;
+
+        default:
+            console.log('unhandled msg:', msg)
+    }
+
+}
 
 //Set the default values
 Howl.initStore = function() {
@@ -77,7 +117,7 @@ var helper = new HowlHelper({
     },
 
     onMsg: function(msg) {
-        console.log('#: onMsg', msg)
+        handleMessage(msg)
     }
 })
 
