@@ -4,7 +4,10 @@ var React = require('react'),
     Actions = require('../actions'),
 
     routes = require('../routes.jsx'),
-    helpers = require('./helpers')
+    helpers = require('./helpers'),
+
+    //Need to include howl from somewhere...
+    Howl = require('../stores/howl')
 
 module.exports = {
 
@@ -15,6 +18,7 @@ module.exports = {
         require("react-tap-event-plugin")()
 
         this.tryReuseToken(function() {
+
             Router.run(routes, function(Handler, state) {
 
                 //trigger actions based on the route.
@@ -50,7 +54,14 @@ module.exports = {
 
         fifo.send('sessions').get(token, function(err, res, body) {
 
-            if (err || res.statusCode !== 200) {
+            if (err) {
+                document.location.hash = '#/login'
+                Actions.session.logout('Could not validate token')
+                console.error(err.message)
+                return cb()
+            }
+
+            if (res.statusCode !== 200) {
                 document.location.hash = '#/login'
                 Actions.session.logout('Invalid token')
                 return cb()
@@ -59,7 +70,8 @@ module.exports = {
             Actions.session.loginSuccess({
                 success: true,
                 token: token,
-                data: body
+                data: body,
+                endpoint: endpoint
             })
             return cb()
 

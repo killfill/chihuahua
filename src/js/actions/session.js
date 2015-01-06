@@ -20,7 +20,8 @@ module.exports = {
             else
                 this.loginSuccess({
                     token: body.session,
-                    data: body
+                    data: body,
+                    endpoint: endpoint
                 })
 
         }.bind(this))
@@ -34,7 +35,8 @@ module.exports = {
             actionType: 'SESSION_LOGIN_OK',
             success: true,
             data: params.data,
-            token: params.token
+            token: params.token,
+            endpoint: params.endpoint
         })
     },
 
