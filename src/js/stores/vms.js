@@ -1,9 +1,9 @@
 
-var Store = require('../utils/Store.js'),
+var AjaxStore = require('../utils/AjaxStore.js'),
     D = require('../dispatcher'),
     Actions = require('../actions')
 
-var Vms = module.exports = new Store({
+var Vms = module.exports = new AjaxStore({
     resource: 'vms',
     defaultHeaders: {
         'x-full-list': true,

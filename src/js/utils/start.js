@@ -23,9 +23,7 @@ module.exports = {
 
                 //trigger actions based on the route.
                 var route = state.routes[state.routes.length-1]
-
                 switch (route.name) {
-
                     case 'machine':
                         Actions.vms.selected(state.params.uuid)
                         break;

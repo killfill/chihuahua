@@ -1,8 +1,8 @@
 
-var Store = require('../utils/Store.js'),
+var AjaxStore = require('../utils/AjaxStore.js'),
     D = require('../dispatcher')
 
-var Roles = module.exports = new Store({resource: 'roles'})
+var Roles = module.exports = new AjaxStore({resource: 'roles'})
 
 Roles.dispatchToken = D.register(function(payload) {
     var action = payload.action

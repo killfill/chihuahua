@@ -3,9 +3,45 @@ var Store = require('../utils/Store.js'),
     D = require('../dispatcher'),
     Vms = require('./vms'),
     Vm = require('./vm'),
-    HowlHelper = require('../utils/howl-helper')
+    HowlConnector = require('../utils/howl-connector')
 
-var Howl = module.exports = new Store({resource: 'asdasd'})
+var Howl = module.exports = new Store().mergeWith({
+
+    resetStore: function() {
+        this.clear()
+        this.set('connected', false)
+        this.set('channels', [])
+    },
+
+    join: function(id) {
+
+        var channels = Howl.get('channels')
+
+        //Ignore duplicate calls.
+        if (channels.indexOf(id) > -1)
+            return false
+
+        connection.send({join: id})
+        channels.push(id)
+
+        console.log('joining ' + id + ' ...')
+    },
+
+    leave: function(id) {
+
+        var channels = Howl.get('channels'),
+            idx = channels.indexOf(id)
+
+        if (idx < 0)
+            throw new Error('Cannot leave unknown channel: ' + id)
+
+        connection.send({leave: id})
+        channels.splice(idx, 0)
+
+        console.log('leaving ' + id + ' ...')
+    }
+
+})
 
 Howl.dispatchToken = D.register(function(payload) {
     var action = payload.action
@@ -13,13 +49,13 @@ Howl.dispatchToken = D.register(function(payload) {
     switch (action.actionType) {
 
         case 'SESSION_LOGIN_OK':
-            helper.connect(action.endpoint.replace('http', 'ws') + '/howl', action.token)
+            connection.connect(action.endpoint.replace('http', 'ws') + '/howl', action.token)
             Vms.subscribe(joinChannels)
             break;
 
         case 'SESSION_LOGOUT':
             leaveChannels()
-            helper.disconnect()
+            connection.disconnect()
             Vms.unsubscribe(joinChannels)
             break;
     }
@@ -27,15 +63,28 @@ Howl.dispatchToken = D.register(function(payload) {
     return false
 })
 
-function emitVm() {
-    Vms.emit()
+Howl.resetStore()
 
-    //If there is a currently selected VM, emit that store too.
-    if (Vm.get('vm'))
-        Vm.emit()
-}
 
-//Handle message from howl
+var connection = new HowlConnector({
+    onLogin: function() {
+        Howl.set('connected', true)
+        joinChannels()
+        Howl.emit()
+    },
+
+    onDisconnect: function() {
+        Howl.resetStore()
+        Howl.emit()
+    },
+
+    onMsg: function(msg) {
+        handleMessage(msg)
+    }
+})
+
+
+//Handle message from the backend
 function handleMessage(obj) {
 
     var chan = obj.channel,
@@ -66,61 +115,6 @@ function handleMessage(obj) {
 
 }
 
-//Set the default values
-Howl.initStore = function() {
-    Howl.clear()
-    Howl.set('connected', false)
-    Howl.set('channels', [])
-}
-Howl.initStore()
-
-
-Howl.join = function(id) {
-
-    var chans = Howl.get('channels')
-
-    if (chans.indexOf(id) > -1)
-        return false //Just ignore duplicate calls.
-        // throw new Error('Channel already subscribed: ' + id)
-
-    console.log('joining ' + id + ' ...')
-
-    helper.send({join: id})
-    chans.push(id)
-}
-
-Howl.leave = function(id) {
-
-    var chans = Howl.get('channels'),
-        idx = chans.indexOf(id)
-
-    if (idx < 0)
-        throw new Error('Cannot leave unknown channel: ' + id)
-
-    console.log('leaving ' + id + ' ...')
-
-    helper.send({leave: id})
-    chans.splice(idx, 0)
-}
-
-
-var helper = new HowlHelper({
-    onLogin: function() {
-        Howl.set('connected', true)
-        joinChannels()
-        Howl.emit()
-    },
-
-    onDisconnect: function() {
-        Howl.initStore()
-        Howl.emit()
-    },
-
-    onMsg: function(msg) {
-        handleMessage(msg)
-    }
-})
-
 
 //Join to the saved channels
 function joinChannels() {
@@ -135,4 +129,12 @@ function joinChannels() {
 //Leave the joined channels
 function leaveChannels() {
     Howl.get('channels').map(Howl.leave)
+}
+
+function emitVm() {
+    Vms.emit()
+
+    //If there is a currently selected VM, emit that store too.
+    if (Vm.get('vm'))
+        Vm.emit()
 }

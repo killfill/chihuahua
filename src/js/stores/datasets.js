@@ -1,8 +1,8 @@
 
-var Store = require('../utils/Store.js'),
+var AjaxStore = require('../utils/AjaxStore.js'),
     D = require('../dispatcher')
 
-var Datasets = module.exports = new Store({resource: 'datasets'})
+var Datasets = module.exports = new AjaxStore({resource: 'datasets'})
 
 //Order by Name
 Datasets.sortBy = function(a, b) {

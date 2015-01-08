@@ -1,56 +1,7 @@
-function merge(a,b) {
-    for (k in b) {
-        a[k] = b[k]
-    }
-    return a
-}
+var merge = require('./helpers').merge
 
-var Store = function (opts) {
-
-    /* Remote stuff: TODO: make this a mixin of Store... */
-    opts = opts || {}
-    this.resource = opts.resource || 'resource options is missing'
-    this.defaultHeaders = opts.defaultHeaders || {'x-full-list': true}
-
-    this.request = function(uuid, opts) {
-        opts = opts || {}
-
-        //Cache!
-        if (!opts.force && this.get(uuid))
-            return this.emit()
-
-        var h = this.defaultHeaders
-
-        fifo.send(this.resource).get({args: uuid, headers: h}, function(err, res, body) {
-
-            if (err || res.statusCode !== 200 || !body)
-                return console.error('Could not query:' + (err && err.message || res.statusCode))
-
-            this.set(uuid, body)
-            this.emit()
-
-        }.bind(this))
-    }
-
-    this.requestAll = function(headers) {
-
-        var h = merge(headers || {}, this.defaultHeaders)
-
-        fifo.send(this.resource).get({headers: h}, function(err, res, body) {
-
-            if (err || res.statusCode !== 200 || !body)
-                return console.error('Could not query:' + (err && err.message || res.statusCode))
-
-            if (Array.isArray(body))
-                this.setDataArray(body, 'uuid')
-            else
-                this.setData(body)
-            this.emit()
-
-        }.bind(this))
-    }
-
-    /* End remote stuff */
+//Simple raw store
+var Store = module.exports = function () {
 
     this.data = {}
     this.listeners = []
@@ -125,8 +76,14 @@ var Store = function (opts) {
     //Overrides
     this.sortBy = function(a, b) {
         return -1
+    },
+
+    //Merge other properties into the current instance
+    //i.e. for use as the howl store.. :P
+    this.mergeWith = function(other) {
+        return merge(this, other)
     }
 
 }
 
-module.exports = Store
+window.Store = Store
