@@ -17,15 +17,5 @@ module.exports = {
             fifo.defaultParams.headers = {'accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded'}
             fifo.defaultParams.json = false
         }
-
-    },
-
-    //Merge b into a
-    merge: function(a, b) {
-        for (k in b) {
-            a[k] = b[k]
-        }
-        return a
     }
-
 }

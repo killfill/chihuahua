@@ -53,6 +53,9 @@ Vms.subscribe(function(list) {
 Users.subscribe(function(users) {
     var vm = Vm.get('vm')
 
-    Vm.set('user', Users.get(vm.config.owner))
-    Vm.emit()
+    if (vm) {
+        Vm.set('user', Users.get(vm.config.owner))
+        Vm.emit()
+    }
+
 })

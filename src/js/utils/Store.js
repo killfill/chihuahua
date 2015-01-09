@@ -1,4 +1,4 @@
-var merge = require('./helpers').merge
+var assign = require('object-assign')
 
 //Simple raw store
 var Store = module.exports = function () {
@@ -8,7 +8,6 @@ var Store = module.exports = function () {
 
     this.set = function(id, obj) {
         this.data[id] = obj
-        // this.emit()
         return obj
     },
 
@@ -18,12 +17,10 @@ var Store = module.exports = function () {
 
     this.update = function(id, newParams) {
         merge(this.data[id], newParams)
-        // this.emit()
     }
 
     this.remove = function(id) {
         delete this.data[id]
-        // this.emit()
     }
 
     this.getAll = function() {
@@ -40,7 +37,6 @@ var Store = module.exports = function () {
             throw new Error('Data must by a hash, and is of type ' + typeof data + '! --> ' + this.resource)
 
         this.data = data
-        // this.emit()
     },
 
     this.setDataArray = function(data, id) {
@@ -52,8 +48,6 @@ var Store = module.exports = function () {
         data.forEach(function(obj) {
             this.data[obj[id]] = obj
         }.bind(this))
-
-        // this.emit()
     },
 
 
@@ -78,10 +72,9 @@ var Store = module.exports = function () {
         return -1
     },
 
-    //Merge other properties into the current instance
     //i.e. for use as the howl store.. :P
-    this.mergeWith = function(other) {
-        return merge(this, other)
+    this.assign = function(other) {
+        return assign(this, other)
     }
 
 }

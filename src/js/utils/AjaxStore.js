@@ -1,5 +1,5 @@
 var Store = require('./store'),
-    merge = require('./helpers').merge
+    assign = require('object-assign')
 
 //Extended Store that can make requests to the backend
 var AjaxStore = module.exports = function(opts) {
@@ -34,7 +34,7 @@ var AjaxStore = module.exports = function(opts) {
 
     this.requestAll = function(headers) {
 
-        var h = merge(headers || {}, this.defaultHeaders)
+        var h = assign(headers || {}, this.defaultHeaders)
 
         fifo.send(this.resource).get({headers: h}, function(err, res, body) {
 

@@ -7,7 +7,7 @@ module.exports = {
 
         helpers.connectToFiFo(endpoint)
 
-        D.handleViewAction({
+        D.handle({
             actionType: 'SESSION_LOGIN_REQ',
             endpoint: endpoint
         })
@@ -31,7 +31,7 @@ module.exports = {
 
         fifo.token = params.token
 
-        D.handleServerAction({
+        D.handle({
             actionType: 'SESSION_LOGIN_OK',
             success: true,
             data: params.data,
@@ -42,7 +42,7 @@ module.exports = {
 
     loginFailed: function(params) {
 
-        D.handleServerAction({
+        D.handle({
             actionType: 'SESSION_LOGIN_ERR',
             success: false,
             error: params.error
@@ -51,7 +51,7 @@ module.exports = {
 
     logout: function(msg) {
         fifo.send('sessions').delete(Session.get('token'), function() {})
-        D.handleViewAction({
+        D.handle({
             actionType: 'SESSION_LOGOUT',
             msg: msg
         })

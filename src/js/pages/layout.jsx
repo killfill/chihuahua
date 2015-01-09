@@ -5,6 +5,7 @@ var React = require('react'),
 
     Sidebar = require('../components/sidebar.jsx'),
     AppButtons = require('../components/app-buttons.jsx'),
+    Notifications = require('../components/notifications.jsx'),
 
     titelize = require('../utils/helpers').titelize,
     Session = require('../stores/session'),
@@ -44,6 +45,7 @@ module.exports = React.createClass({
                 <div className='mui-app-content-canvas'>
                     <RouteHandler/>
                 </div>
+                <Notifications/>
             </mui.AppCanvas>
         )
 

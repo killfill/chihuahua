@@ -1,20 +1,12 @@
-var Dispatcher = require('flux').Dispatcher
+var Dispatcher = require('flux').Dispatcher,
+    assign = require('object-assign')
 
-var D = new Dispatcher()
-
-
-D.handleServerAction = function(action) {
-    this.dispatch({
-        source: 'SERVER_ACTION',
-        action: action
-    })
-}
-
-D.handleViewAction = function(action) {
-    this.dispatch({
-        source: 'VIEW_ACTION',
-        action: action
-    })
-}
-
-module.exports = D
+//Maybe just use the raw dispacher instead of this wrapper?
+module.exports = assign(new Dispatcher(), {
+ handle: function(action) {
+     this.dispatch({
+         source: 'VIEW_ACTION',
+         action: action
+     })
+ }
+})

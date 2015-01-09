@@ -52,22 +52,24 @@ var MachineButtons = React.createClass({
     },
     render: function() {
 
-        var play = true,
-            stop = true,
-            uuid
+        var play = false,
+            stop = false,
+            uuid,
+            alias
 
         var vm = this.state.vm
         if (vm) {
             play = vm.state !== 'running'
             stop = !play
             uuid = vm.uuid
+            alias = vm.config.alias
         }
 
         var isRunning = false
         return (<span>
-            <DropDownIcon key={10} icon='navigation-more-vert' menuItems={menuItems['machine']} onChange={triggerAction('machine', 'menu', uuid)} />
-            <IconButton key={3} icon='av-play-arrow' disabled={!play} onTouchTap={triggerAction('machine', 'start', uuid)} />
-            <IconButton key={4} icon='av-stop' disabled={!stop} onTouchTap={triggerAction('machine', 'stop', uuid)} />
+            <DropDownIcon key={10} icon='navigation-more-vert' menuItems={menuItems['machine']} onChange={triggerAction('machine', 'menu', uuid, alias)} />
+            <IconButton key={3} icon='av-play-arrow' disabled={!play} onTouchTap={triggerAction('machine', 'start', uuid, alias)} />
+            <IconButton key={4} icon='av-stop' disabled={!stop} onTouchTap={triggerAction('machine', 'stop', uuid, alias)} />
         </span>)
     }
 })

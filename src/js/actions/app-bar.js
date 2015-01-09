@@ -2,7 +2,7 @@ var D = require('../dispatcher')
 
 module.exports = {
     
-    trigger: function(context, actionName, id) {
+    trigger: function(context, actionName, id, name) {
 
         return function(e, selectedIdx, item) {
 
@@ -15,11 +15,12 @@ module.exports = {
                     console.info('unhandled app-bar action', context, actionName, id, item)
             }
 
-            D.handleViewAction({
+            D.handle({
                 actionType: 'APP_BAR',
                 context: context,
                 actionName: actionName,
                 id: id,
+                name: name,
                 params: item
             })
 

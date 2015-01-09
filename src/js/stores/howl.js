@@ -5,7 +5,7 @@ var Store = require('../utils/Store.js'),
     Vm = require('./vm'),
     HowlConnector = require('../utils/howl-connector')
 
-var Howl = module.exports = new Store().mergeWith({
+var Howl = module.exports = new Store().assign({
 
     resetStore: function() {
         this.clear()
